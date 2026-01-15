@@ -1,0 +1,104 @@
+{
+"Room1.WakeUp": [
+    "{PLAYER} *A cold pulse surges through your skull as you awaken*",
+    "{PLAYER} Ngh... my head...",
+    "{PLAYER} Where... where am I?",
+    "{PLAYER} I can't seem to remember anything...",
+    "{PLAYER} *You slowly rise to your feet.*"
+],
+"Room1.Stand": [
+    "{PLAYER} What are these words that I can see?",
+    "{PLAYER} They’re blurry, yet they whisper of something I’ve lost.",
+    "{PLAYER} Pages. I… I think I need pages. But why?",
+    "{PLAYER} *You decide to explore your surroundings*",
+],
+
+
+"Room1.PagePickup.Before": [
+    "{PLAYER} This… must be one of the pages.",
+    "{PLAYER} *You pick it up carefully, feeling a strange pull.*"
+
+],
+"Room1.PagePickup.After": [
+   "{PLAYER} Ah—!",
+   "{PLAYER} All these words… are flowing into me.",
+   "{PLAYER} I’m remembering something... fragments of knowledge.",
+   "{PLAYER} These pages… they’re pieces of my memories."
+],
+
+
+"Room1.BookPickup": [
+    "{PLAYER} A missing book… maybe it belongs somewhere.",
+],
+
+
+"Room1.MissingBook.Before": [
+    "{PLAYER} There seems to be a book missing from the shelf...",
+    "{PLAYER} Maybe I can find it somewhere in this room?"
+    ],
+"Room1.MissingBook.After1": [
+    "{PLAYER} The book seems to fit perfectly in the gap.",
+    "{PLAYER} *You slide the book into place.*"
+  ],
+"Room1.MissingBook.After2": [
+    "{PLAYER} A hidden passage… someone wanted me to find this.",
+    "{PLAYER} But why?"
+   ],
+
+
+"Room2.First.NPC1": [
+   "{NPC} Ah… there you are. Awake at last.",
+   "{NPC} Welcome, fledgling. You stand within the Library Between Realms.",
+   "{PLAYER} <obfuscated>W-what… is this place?</obfuscated>",
+   "{PLAYER} Why can’t I speak properly?",
+   "{NPC} Your voice, your understanding, your past… all sealed for your trial.",
+   "{NPC} Take this page. It will steady your mind… enough to help you.",
+   "{PLAYER} *You accept the page. A familiar warmth returns to your mind.*"
+   ],
+"Room2.First.NPC2": [
+    "{NPC} The library will only open itself to those who earn its trust.",
+    "{NPC} Explore the books here. They hold memories you once knew.",
+    "{NPC} When you are ready, ascend to the next level.",
+    "{NPC} There, you will gather the volumes I require.",
+    "{PLAYER} I need answers… but for now, I’ll follow their lead."
+   ],
+
+
+"Room2.BarrierWords": [
+    '{PLAYER} "Behind the <red>veil<gray> lies truth unlit, waiting for the worthy to lift it."',
+    '{PLAYER} "A true <red>ward<gray> protects not through strength, but through devotion."',
+    '{PLAYER} "A <red>barrier<gray> is the mind made manifest—resolve shaped into form."',
+    '{PLAYER} "To <red>prevent<gray> is to guide fate gently away from ruin."',
+    '{PLAYER} "To <red>seal<gray> is to hold fast the truth until its time has come."',
+    '{PLAYER} "Where chaos breaks, <red>bind<gray> it; where order frays, bind again."',
+    "{PLAYER} "<red>Halt<gray>, until the chosen one speaks the word unspoken."",
+    "{PLAYER} \"When the moment comes, utter the <red>release<gray>, and all bindings shall kneel to you.\""
+   ],
+
+
+"Room2.BarrierClear": [
+    "{PLAYER} The path to the second floor is clear...",
+    "{PLAYER} I can feel something returning. I should head upstairs."
+   ],
+
+
+"Room2.GetAllBooks": [
+    "{PLAYER} That should be every book they asked for. Time to return."
+    ],
+
+
+"Room2.Second.NPC1": [
+    "{PLAYER} *You hand over the books*"
+    ],
+"Room2.Second.NPC2": [
+    "{NPC} Well done. The Library stirs because of you.",
+    "{NPC} So… it seems what <red><bold>HE</bold><gray> predicted was true.",
+    "{PLAYER} <bold><red>HE</bold><gray>? Who is that…?",
+
+    "{NPC} The one who walked these halls before you. The last to withstand the Library’s trials.",
+    "{NPC} He foresaw a successor… someone who would reclaim what they surrendered.",
+    "{NPC} Your path climbs ever higher. Go to the top of the library. The truth waits there.",
+    "{NPC} Ah—before you go. Another page. Without it, the ascent would deny you.",
+    "{PLAYER} *You take the page, feeling your strength return.*"
+   ]
+}

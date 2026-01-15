@@ -1,0 +1,138 @@
+REWRITTEN FULL DIALOGUE — NOW WITH A REAL STORY THROUGHOUT
+
+INTRO (Room 1)
+Waking Up
+"Room1.WakeUp": [
+    "{PLAYER} *A sharp pain pulses through your skull as you awaken on a cold floor.*",
+    "{PLAYER} Ngh... my head...",
+    "{PLAYER} Where... where am I?",
+    "{PLAYER} I can’t remember anything… not even my own past.",
+    "{PLAYER} *You slowly rise to your feet, unsteady but determined.*"
+],
+
+Standing Up
+"Room1.Stand": [
+    "{PLAYER} These… words floating around me…?",
+    "{PLAYER} They look familiar, but I can’t understand them.",
+    "{PLAYER} Pages. I… I think I need pages. Why?",
+    "{PLAYER} *You decide to explore, hoping for answers.*"
+],
+
+
+PAGE DISCOVERY (Room 1)
+Page Pickup
+"Room1.PagePickup1": [
+    "{PLAYER} Is this one of the pages...?",
+    "{PLAYER} *You pick it up carefully, feeling a strange pull.*"
+],
+"Room1.PagePickup2": [
+    "{PLAYER} Wh— What’s happening to my mind?",
+    "{PLAYER} These words… they’re rushing back to me.",
+    "{PLAYER} I’m remembering something— fragments of knowledge.",
+    "{PLAYER} These pages… they’re pieces of me. Of my memories."
+],
+
+
+BOOK + PASSAGE DISCOVERY
+Book Pickup
+"Room1.BookPickup": [
+    "{PLAYER} A missing book… maybe it belongs somewhere.",
+],
+
+Bookshelf Before Placing Book
+"Room1.MissingBook.Before": [
+    "{PLAYER} There’s a gap here. A book is missing.",
+    "{PLAYER} Maybe this one fits…"
+],
+
+Bookshelf After
+"Room1.MissingBook.After1": [
+    "{PLAYER} It fits perfectly.",
+    "{PLAYER} *You slide the book into place.*"
+],
+"Room1.MissingBook.After2": [
+    "{PLAYER} A hidden passage… someone wanted me to find this.",
+    "{PLAYER} But why?"
+],
+
+
+STAIRWAY TEXT — LORE / MEMORY ECHOES
+As the player descends:
+Floating Words:
+“Descend…”
+
+
+“Claim your memories…”
+
+
+“Prove your worth…”
+
+
+These are echoes from the previous Librarian, fragments of sealed memory speaking to you.
+
+ROOM 2 — FIRST NPC ENCOUNTER
+First Interaction
+"Room2.First.NPC1": [
+    "{NPC} Ah… you’re awake. The library has been expecting you.",
+    "{NPC} You must be the new <obfuscated>librarian.</obfuscated>",
+    "{PLAYER_TALK} <obfuscated>Who… who are you?</obfuscated>",
+    "{PLAYER} Why— why can’t I speak properly?",
+    "{NPC} Your voice, your understanding, your past… all sealed for your trial.",
+    "{NPC} But you’re doing well. Here—take this page. It will help you <obfuscated>read</obfuscated> again.",
+    "{PLAYER} *You accept the page. A familiar warmth returns to your mind.*"
+],
+
+Second Interaction
+"Room2.First.NPC2": [
+    "{NPC} The library will only open itself to those who earn its trust.",
+    "{NPC} Explore the books here. They hold memories you once knew.",
+    "{NPC} Afterward, you’ll need to reach the second floor.",
+    "{PLAYER} I still need answers… but following them seems like the only path forward."
+],
+
+
+BARRIER + QUOTES (The Words Are Your Lost Powers/Commands)
+These quotes now reflect the foundational principles you once mastered as the Librarian.
+Barrier Books
+"Room2.BarrierWords": [
+    '{PLAYER} "Behind the <red>veil<gray> lies truth unlit, waiting for the worthy to lift it."',
+    '{PLAYER} "A true <red>ward<gray> protects not through strength, but through devotion."',
+    '{PLAYER} "A <red>barrier<gray> is the mind made manifest—resolve shaped into form."',
+    '{PLAYER} "To <red>prevent<gray> is to guide fate gently away from ruin."',
+    '{PLAYER} "To <red>seal<gray> is to hold fast the truth until its time has come."',
+    '{PLAYER} "Where chaos breaks, <red>bind<gray> it; where order frays, bind again."',
+    '{PLAYER} "<red>Halt<gray>, and even the restless tide of time obeys."',
+    '{PLAYER} "Speak <red>release<gray>, and let all chains fall away."'
+]
+
+Barrier Clears
+"Room2.BarrierClear": [
+    "{PLAYER} The barrier… it responded to my memory.",
+    "{PLAYER} I can feel something returning. I should head upstairs."
+],
+
+
+SECOND FLOOR — RETRIEVING THE BOOKS
+Collected All Books
+"Room2.GetAllBooks": [
+    "{PLAYER} That’s all of them. These books… they feel important. Like echoes of who I was.",
+    "{PLAYER} I should return them to the caretaker."
+],
+
+Handing Over Books
+"Room2.Second.NPC1": [
+    "{PLAYER} *You hand over the restored books*"
+],
+
+NPC Response + Story Reveal
+"Room2.Second.NPC2": [
+    "{NPC} Excellent. You remember more quickly than I expected.",
+    "{NPC} So what <red><bold>HE</bold></red> said about you was true.",
+    "{PLAYER} <bold><red>HE</red></bold>? Who is <bold><red>HE</red></bold>?",
+    "{NPC} The one who sealed your memories: the former Librarian.",
+    "{NPC} He chose you as his successor, but only if you could reclaim yourself.",
+    "{NPC} Your trial is nearly complete, but a final step remains.",
+    "{NPC} Ascend to the top of the <obfuscated>library</obfuscated>. There, your truth awaits.",
+    "{NPC} Ah— and take this page. You’ll need its power to reach the top.",
+    "{PLAYER} *You take the page, feeling your strength return.*"
+],

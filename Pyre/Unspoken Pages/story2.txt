@@ -1,0 +1,101 @@
+{
+"Room1.WakeUp": [
+    "{PLAYER} *A cold pulse surges through your skull as you awaken*",
+    "{PLAYER} Ngh… what was that…?",
+    "{PLAYER} This place… I don’t recognize any of it.",
+    "{PLAYER} And my memories… they’re gone. Emptied.",
+    "{PLAYER} *You struggle to your feet, unsteady and uneasy*"
+],
+"Room1.Stand": [
+    "{PLAYER} These floating words… why can I see them?",
+    "{PLAYER} They’re blurry—yet they whisper of something I’ve lost.",
+    "{PLAYER} Pages… I need to find pages. But why?",
+    "{PLAYER} *You decide to investigate the room*"
+],
+
+
+"Room1.PagePickup1": [
+    "{PLAYER} This… must be one of the pages.",
+    "{PLAYER} *You lift it carefully; the symbols glow faintly*"
+],
+"Room1.PagePickup2": [
+    "{PLAYER} Ah—!",
+    "{PLAYER} Words… memories… flooding into me.",
+    "{PLAYER} Not mine. Or… are they?",
+    "{PLAYER} What exactly are these pages…?"
+],
+
+
+"Room1.BookPickup": [
+    "{PLAYER} This book hums with the same energy… it might be important."
+],
+
+
+"Room1.MissingBook.Before": [
+    "{PLAYER} There’s a book missing here.",
+    "{PLAYER} If I find it… maybe this place will reveal what it’s hiding."
+],
+"Room1.MissingBook.After1": [
+    "{PLAYER} It fits perfectly. Almost as if it was waiting for me.",
+    "{PLAYER} *You slide the book into place*"
+],
+"Room1.MissingBook.After2": [
+    "{PLAYER} A passage… hidden behind the shelf.",
+    "{PLAYER} Something wants me to go deeper."
+],
+
+
+"Room2.First.NPC1": [
+    "{NPC} Ah… there you are. Awake at last.",
+    "{NPC} Welcome, fledgling. You stand within the Library Between Realms.",
+    "{PLAYER_TALK} <obfuscated>W-what… is this place?</obfuscated>",
+    "{PLAYER} My voice… it’s barely working.",
+    "{NPC} Your memories were sealed when you arrived. A precaution… and a test.",
+    "{NPC} Take this page. It will steady your mind… enough to read what awaits you.",
+    "{PLAYER} *You take the page, feeling its weight settle into your thoughts*"
+],
+"Room2.First.NPC2": [
+    "{NPC} Read the books scattered through this floor.",
+    "{NPC} The Library speaks through them, if you can withstand its voice.",
+    "{NPC} When you are ready, ascend to the next level.",
+    "{NPC} There, you will gather the volumes I require.",
+    "{PLAYER} I need answers… but for now, I’ll follow their lead."
+],
+
+
+"Room2.BarrierWords": [
+    "{PLAYER} \"Beyond the <red>veil<gray> lies the memory you surrendered.\"",
+    "{PLAYER} \"A true <red>ward<gray> does not defend—it judges the one who approaches.\"",
+    "{PLAYER} \"A <red>barrier<gray> takes form from the will of its maker… and the worth of its challenger.\"",
+    "{PLAYER} \"To <red>prevent<gray> is to halt a path you once walked, steering fate anew.\"",
+    "{PLAYER} \"To <red>seal<gray> is to bury truth beneath unbroken resolve.\"",
+    "{PLAYER} \"Where chaos stirs, <red>bind<gray> it; where identity fractures, bind again.\"",
+    "{PLAYER} \"<red>Halt<gray>, until the chosen one speaks the word unspoken.\"",
+    "{PLAYER} \"When the moment comes, utter the <red>release<gray>, and all bindings shall kneel to you.\""
+],
+
+
+"Room2.BarrierClear": [
+    "{PLAYER} The force is gone… the way forward opens. I can reach the next floor now."
+],
+
+
+"Room2.GetAllBooks": [
+    "{PLAYER} That should be every volume they asked for. Time to return."
+],
+
+
+"Room2.Second.NPC1": [
+    "{PLAYER} *You hand over the books; the NPC’s eyes gleam faintly*"
+],
+"Room2.Second.NPC2": [
+    "{NPC} Well done. The Library stirs because of you.",
+    "{NPC} So… it seems what <red><bold>HE</bold><gray> predicted was true.",
+    "{PLAYER} <bold><red>HE</bold><gray>? Who is that…?",
+    "{NPC} The one who walked these halls before you. The last to withstand the Library’s trials.",
+    "{NPC} He foresaw a successor… someone who would reclaim what they surrendered.",
+    "{NPC} Your path climbs ever higher. Go to the top of the <obfuscated>library</obfuscated>. The truth waits there.",
+    "{NPC} Ah—before you go. Another page. Without it, the ascent would deny you.",
+    "{PLAYER} *You take the page, its aura colder than the others*"
+]
+}
