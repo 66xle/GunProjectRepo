@@ -16,12 +16,12 @@ default_strType = Variable("%default str-Type")
 # item
 default_itemMainHand = Variable("%default item-MainHand")   
 
-itemEnderEye = Item("ender_eye")
+item_EnderEye = Item("ender_eye")
 
 Function("GunLoop", codeblocks=[
     SetVariable.Decrement(default_numGunCooldown, 1),
 
-    IfPlayer.IsUsingItem(itemEnderEye, codeblocks=[
+    IfPlayer.IsUsingItem(item_EnderEye, codeblocks=[
         IfPlayer.NoItemCooldown(default_itemMainHand, codeblocks=[
             IfVariable.Equals(default_boolFirstShot, 1, codeblocks=[
                 CallFunction("FireGun", 1)

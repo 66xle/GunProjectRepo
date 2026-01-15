@@ -6,7 +6,7 @@ from dfpyre import SetVariable as _SetVariable
 from dfpyre import GameValue as _GameValue
 from dfpyre import IfVariable as _IfVariable
 
-DEFAULT_TARGET = Target.SELECTION
+DEFAULT_TARGET = Target.NONE
 
 class PlayerAction(_PlayerAction):
     
