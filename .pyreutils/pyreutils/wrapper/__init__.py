@@ -35,19 +35,30 @@ class MathOp:
         """Converts mixed math into a DF Num Item with %math()"""
         parts = []
         
-        # Handle Source
-        if isinstance(self.source, Var): 
-            parts.append(f'%var({self.source.name})')
-        else: 
-            parts.append(str(self.source))
+        # --- COLOR CODES ---
+        RED = "\033[91m"
+        CYAN = "\033[96m"
+        BOLD = "\033[1m"
+        RESET = "\033[0m"
+
+        def _convert_segment(obj):
+            if isinstance(obj, Var): 
+                return f'%var({obj.name})'
+            
+            # --- ERROR: Colored Output ---
+            if isinstance(obj, GameValue):
+                raise TypeError(
+                    f"\n{RED}{BOLD}✖ CRITICAL ERROR: Invalid GameValue Usage{RESET}\n"
+                    f"{RED}Cannot use GameValue '{obj}' inside complex math or function parameters.{RESET}\n"
+                    f"{CYAN}✔ FIX: Assign the GameValue to a Variable first (e.g. v.temp = GameValue), then use v.temp.{RESET}\n"
+                )
+            
+            return str(obj)
+
+        parts.append(_convert_segment(self.source))
         
-        # Handle Ops
         for _, val, symbol in self.ops:
-            if isinstance(val, Var): 
-                val_str = f'%var({val.name})'
-            else: 
-                val_str = str(val)
-            parts.append(f' {symbol} {val_str}')
+            parts.append(f' {symbol} {_convert_segment(val)}')
             
         math_str = "".join(parts)
         return Number(f'%math({math_str})')
@@ -63,7 +74,7 @@ def _emit_inplace(block):
         ctx.append(block)
 
 # --- MONKEY PATCHES ---
-def _patch_var_methods(cls):
+def _patch_methods(cls):
     # 1. Math Ops (Var + 5) -> Returns MathOp object
     cls.__add__ = lambda self, o: MathOp(self)._add_op('Add', o, '+')
     cls.__sub__ = lambda self, o: MathOp(self)._add_op('Subtract', o, '-')
@@ -73,7 +84,10 @@ def _patch_var_methods(cls):
     
     # 2. Reverse Math (5 + Var)
     cls.__radd__ = lambda self, o: MathOp(o)._add_op('Add', self, '+')
+    cls.__rsub__ = lambda self, o: MathOp(o)._add_op('Subtract', self, '-')
     cls.__rmul__ = lambda self, o: MathOp(o)._add_op('Multiply', self, '*')
+    cls.__rtruediv__ = lambda self, o: MathOp(o)._add_op('Divide', self, '/')
+    cls.__rmod__ = lambda self, o: MathOp(o)._add_op('Remainder', self, '%')
     
     # 3. In-Place Assignments (v.x += 1)
     # These execute immediately and return 'self' to satisfy Python's assignment logic
@@ -83,19 +97,8 @@ def _patch_var_methods(cls):
     cls.__imul__ = lambda self, o: (_emit_inplace(_SetVariable.Multiply(self, [self, o])) or self)
     cls.__idiv__ = lambda self, o: (_emit_inplace(_SetVariable.Divide(self, [self, o])) or self)
 
-def _patch_gamevalue_methods(cls):
-    # GameValues are read-only source
-    cls.__add__ = lambda self, o: MathOp(self)._add_op('Add', o, '+')
-    cls.__sub__ = lambda self, o: MathOp(self)._add_op('Subtract', o, '-')
-    cls.__mul__ = lambda self, o: MathOp(self)._add_op('Multiply', o, '*')
-    cls.__truediv__ = lambda self, o: MathOp(self)._add_op('Divide', o, '/')
-    cls.__mod__ = lambda self, o: MathOp(self)._add_op('Remainder', o, '%')
-    # Reverse: (Number + GameValue)
-    cls.__radd__ = lambda self, o: MathOp(o)._add_op('Add', self, '+')
-    cls.__rmul__ = lambda self, o: MathOp(o)._add_op('Multiply', self, '*')
-
-_patch_var_methods(Var)
-_patch_gamevalue_methods(GameValue)
+_patch_methods(Var)
+_patch_methods(GameValue)
 
 # ==========================================
 # 1. CONTEXT STACK & MANAGER
@@ -241,7 +244,7 @@ class MagicVarHandler:
             
             # Sub-Case A: Mixed/Complex Math -> Use %math
             if value.is_complex():
-                ctx.append(_SetVariable.Assign(var_obj, value.to_item()))
+                ctx.append(_SetVariable.Assign(var_obj, value.to_math()))
             
             # Sub-Case B: Sequential Math -> Optimized Chain
             else:
