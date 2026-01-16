@@ -17,7 +17,7 @@ temp = Var('num-Temp', 'local')
 
 v = MagicVarHandler(locals())
 
-with Function('Test') as f:
+with PlayerEvent.Chat() as f:
     v.temp = GameValue('Current Health')
     v.loc_Position1 = 5 - v.temp + 5
 
