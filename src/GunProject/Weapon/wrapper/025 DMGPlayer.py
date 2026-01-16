@@ -13,16 +13,12 @@ loc_Hit = Var('loc-Hit', 'local')
 victim_location = GameValue('Location', 'Selection')
 victim_health = GameValue('Current Health', 'Selection')
 
-temp = Var('num-Temp', 'local')
-
 v = MagicVarHandler(locals())
 
 with PlayerEvent.Chat() as f:
-    v.temp = GameValue('Current Health')
-    v.loc_Position1 = 5 - v.temp + 5
-    Else()
-    
-    PlayerAction.SendMessage()
+    with IfPlayer.NameEquals("Steve"): # Forgot 'with'!
+        PlayerAction.SendMessage("Hi")
+
 
 # with Function('025 DMGPlayer', Parameter('num-Damage', ParameterType.NUMBER)) as f:
 #     v.loc_Position1 = SetVariable.ShiftAllAxes(victim_location, -0.5, 0, 0.5)

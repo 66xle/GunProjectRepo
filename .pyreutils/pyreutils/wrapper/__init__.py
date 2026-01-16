@@ -35,11 +35,11 @@ from .math_ops import MathOp
 
 def _Function_Wrapper(*args, **kwargs):
     """Wraps Function() in a ContextBlock."""
-    return ContextBlock(_Function(*args, **kwargs))
+    return ContextBlock(_Function(*args, **kwargs, name="Function"))
 
 def _Process_Wrapper(*args, **kwargs):
     """Wraps Process() in a ContextBlock."""
-    return ContextBlock(_Process(*args, **kwargs))
+    return ContextBlock(_Process(*args, **kwargs, name="Process"))
 
 def _CallFunction_Wrapper(*args, **kwargs):
     """Wraps CallFunction with MathOp support."""
@@ -73,25 +73,21 @@ def _Else_Wrapper(*args, **kwargs):
     """Wraps Else to handle bracket context."""
     result = _Else(*args, **kwargs)
     
-    # Handle Container Logic (Else closes previous block, opens new one)
     if isinstance(result, list) and len(result) >= 2:
         close_block = result[-1]      
         immediate_blocks = result[:-1] 
         
-        ctx = _get_current_context()
-        if ctx is not None: 
-            ctx.extend(immediate_blocks)
-            
-        return ContextBlock(immediate_blocks[0], close_block=close_block)
+        # FIX: Do not ctx.extend here. Let ContextBlock do it on __enter__
+        return ContextBlock(immediate_blocks, close_block=close_block, name="Else")
     
-    # Fallback
+    # Fallback (Shouldn't happen for Else)
     ctx = _get_current_context()
     if ctx is not None:
         if isinstance(result, list): 
             ctx.extend(result)
         else: 
             ctx.append(result)
-    return ContextBlock(result)
+    return ContextBlock(result, name="Else")
 
 if TYPE_CHECKING:
     # --- IDE / STATIC ANALYSIS VIEW ---

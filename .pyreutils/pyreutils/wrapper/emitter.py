@@ -1,4 +1,3 @@
-# pyreutils/wrapper/emitter.py
 from .context import _get_current_context, ContextBlock
 
 class AutoEmitter:
@@ -16,17 +15,17 @@ class AutoEmitter:
             result = original_attr(*args, **kwargs)
             is_container = self._is_container_class or name == "Else"
             
-            # Linear Bracket List [If, Open, Close]
+            # CASE A: Container (If/Repeat) -> Return ContextBlock with blocks
             if is_container and isinstance(result, list) and len(result) >= 2:
                 close_block = result[-1]      
                 immediate_blocks = result[:-1] 
-                ctx = _get_current_context()
-                if ctx is not None: 
-                    ctx.extend(immediate_blocks)
-                return ContextBlock(immediate_blocks[0], close_block=close_block)
+                
+                # FIX: Do NOT ctx.extend() here. Pass logic to ContextBlock.
+                return ContextBlock(immediate_blocks, close_block=close_block, name=f"{self._cls.__name__}.{name}")
 
-            # Standard Block
+            # CASE B: Standard Block
             else:
+                # Standard blocks (Action) are added immediately
                 if isinstance(result, list):
                     blocks = result
                     main_block = result[-1] if result else None
@@ -38,16 +37,12 @@ class AutoEmitter:
                 if ctx is not None: 
                     ctx.extend(blocks)
                 
-                if name == "Function" or is_container:
-                     return ContextBlock(main_block)
+                if name == "Function":
+                     return ContextBlock(main_block, name="Function")
                 return main_block
         return wrapper
-    
+
 class HeaderEmitter:
-    """
-    Wraps classes like PlayerEvent/EntityEvent.
-    Usage: with PlayerEvent.Join() as e:
-    """
     def __init__(self, original_class):
         self._cls = original_class
 
@@ -57,10 +52,8 @@ class HeaderEmitter:
             return original_attr
 
         def wrapper(*args, **kwargs):
-            # 1. Create the Block (e.g. PlayerEvent.Join)
             result = original_attr(*args, **kwargs)
-            
-            # 2. Wrap it in ContextBlock so it acts as a Root
-            return ContextBlock(result)
+            # FIX: Do not process here, just wrap.
+            return ContextBlock(result, name=f"{self._cls.__name__}.{name}")
             
         return wrapper
