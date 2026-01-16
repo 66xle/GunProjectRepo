@@ -1,13 +1,4 @@
-# ruff: noqa: F403, F405, E402
-import sys
-import os
-
-# Add the parent directory to Python's search path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.append(parent_dir)
-
-from Utils.alias import *
+from pyreutils import *
 from dfpyre import *
 
 # Initialize Variables

@@ -1,6 +1,5 @@
 from dfpyre import *
 
-
 # numeric
 default_numGunCooldown = Variable("%default num-GunCooldown")
 default_numRecoil = Variable("%default num-Recoil")

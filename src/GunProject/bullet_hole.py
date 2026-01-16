@@ -1,4 +1,3 @@
-# ruff: noqa: F403, F405
 from dfpyre import *
 
 BULLET_SCALE = 0.075

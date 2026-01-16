@@ -1,0 +1,4 @@
+[lint]
+# F403: Unable to detect undefined names (star imports)
+# F405: Name may be undefined, or defined from star imports
+ignore = ["F403", "F405"]
