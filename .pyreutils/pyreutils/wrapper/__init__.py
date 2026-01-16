@@ -35,12 +35,11 @@ from .math_ops import MathOp
 
 def _Function_Wrapper(*args, **kwargs):
     """Wraps Function() in a ContextBlock."""
-    return ContextBlock(_Function(*args, **kwargs, name="Function"))
+    return ContextBlock(_Function(*args, **kwargs), name="Function")
 
 def _Process_Wrapper(*args, **kwargs):
     """Wraps Process() in a ContextBlock."""
-    return ContextBlock(_Process(*args, **kwargs, name="Process"))
-
+    return ContextBlock(_Process(*args, **kwargs), name="Process")
 def _CallFunction_Wrapper(*args, **kwargs):
     """Wraps CallFunction with MathOp support."""
     # 2. Create Block
@@ -143,3 +142,41 @@ else:
     Else = _Else_Wrapper
     Function = _Function_Wrapper
     Process = _Process_Wrapper
+    
+def local(name):
+    """
+    Create a local variable with the given name. 
+    
+
+    :param name: The name of the variable.
+    :return MagicVarHandler: Creates Variable(name, 'local')
+    """
+    return MagicVarHandler('local', name)
+
+def line(name):
+    """
+    Create a line variable with the given name.
+
+    :param name: The name of the variable.
+    :return MagicVarHandler: Creates Variable(name, 'line')
+    """
+    return MagicVarHandler('line', name)
+
+def save(name):
+    """
+    Create a save variable with the given name.
+
+    :param name: The name of the variable.
+    :return MagicVarHandler: Creates Variable(name, 'save')
+    """
+    return MagicVarHandler('save', name)
+
+def game(name):
+    """
+    Create a game (unsaved) variable with the given name.
+
+    :param name: The name of the variable.
+    :return MagicVarHandler: Creates Variable(name, 'game')
+    """
+    return MagicVarHandler('unsaved', name)
+

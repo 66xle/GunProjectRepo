@@ -1,96 +1,123 @@
+from dfpyre import Var
 from ..alias.SetVariable import SetVariable as _SetVariable
 from .context import _get_current_context
 from .math_ops import MathOp
 from .smart_wrapper import OptimisticOp
 
-class MagicVarHandler:
-    def __init__(self, local_vars):
-        self._vars = local_vars
 
+# ==========================================
+# 1. SHARED ASSIGNMENT LOGIC
+# ==========================================
+def _perform_assignment(var_obj, value):
+    """(Same shared logic as before)"""
+    # Ignore self-assignment
+    if value is var_obj:
+        return
+
+    ctx = _get_current_context()
+
+    # MathOps
+    if isinstance(value, MathOp):
+        if value.is_complex():
+            ctx.append(_SetVariable.Assign(var_obj, value.to_math()))
+        else:
+            ops = value.ops
+            source = value.source
+            if ops:
+                first_method_name, first_val, _ = ops[0]
+                method = getattr(_SetVariable, first_method_name)
+                if isinstance(first_val, list):
+                    ctx.append(method(var_obj, [source, *first_val]))
+                else:
+                    ctx.append(method(var_obj, [source, first_val]))
+                for method_name, val, _ in ops[1:]:
+                    method = getattr(_SetVariable, method_name)
+                    if isinstance(val, list):
+                        ctx.append(method(var_obj, *val))
+                    else:
+                        ctx.append(method(var_obj, val))
+            else:
+                ctx.append(_SetVariable.Assign(var_obj, source))
+        return
+
+    # Optimistic Ops
+    if isinstance(value, OptimisticOp):
+        if value.created_block is not None:
+            if isinstance(value.created_block, list):
+                for b in reversed(value.created_block):
+                    if ctx and ctx[-1] is b:
+                        ctx.pop()
+            elif ctx and ctx[-1] is value.created_block:
+                ctx.pop()
+        method = getattr(_SetVariable, value.name)
+        result = method(var_obj, *value.args)
+        if isinstance(result, list):
+            ctx.extend(result)
+        else:
+            ctx.append(result)
+        return
+
+    # Standard Assign
+    result = _SetVariable.Assign(var_obj, value)
+    if isinstance(result, list):
+        ctx.extend(result)
+    else:
+        ctx.append(result)
+
+
+# ==========================================
+# 2. THE .v PROXY VARIABLE
+# ==========================================
+class ValueProxyVar(Var):
+    """
+    A subclass of Var that adds a .v property for assignment.
+    """
+
+    @property
+    def v(self):
+        """Getter: Returns self, so 'x = var.v' is just 'x = var'."""
+        return self
+
+    @v.setter
+    def v(self, value):
+        """Setter: Triggers the assignment logic (SetVariable/Math)."""
+        _perform_assignment(self, value)
+
+
+# ==========================================
+# 3. SCOPE HANDLER (The Factory)
+# ==========================================
+class MagicVarHandler:
+    def __init__(self, scope_name):
+        self._scope = scope_name
+        self._cache = {}
+
+    def __call__(self, name):
+        """
+        Factory Method: local("Variable Name")
+        Returns a ValueProxyVar bound to this name.
+        """
+        # Check cache (Case-sensitive matching for DF names)
+        if name in self._cache:
+            return self._cache[name]
+
+        # Create new Proxy Var
+        # We DO NOT replace underscores here, because the user provided a string explicitly.
+        # local("My_Var") -> %local(My_Var)
+        new_var = ValueProxyVar(name, self._scope)
+        self._cache[name] = new_var
+        return new_var
+
+    # Optional: Keep the dot syntax for quick access if you want both
+    def __getattr__(self, name):
+        formatted_name = name.replace("_", "-")
+        return self.__call__(formatted_name)
+
+    # Optional: Keep direct assignment via local.name = 5
     def __setattr__(self, name, value):
-        if name.startswith("_"): 
+        if name.startswith("_"):
             super().__setattr__(name, value)
             return
-        if name not in self._vars: 
-            raise ValueError(f"Undefined variable: '{name}'")
-        
-        var_obj = self._vars[name]
-
-        # FIX: Ignore self-assignment from += (v.x = v.x + 1)
-        if value is var_obj:
-            return
-
-        ctx = _get_current_context()
-        
-        # --- CASE 1: MATH OPERATION ---
-        if isinstance(value, MathOp):
-            
-            # Sub-Case A: Mixed/Complex Math -> Use %math
-            if value.is_complex():
-                ctx.append(_SetVariable.Assign(var_obj, value.to_math()))
-            
-            # Sub-Case B: Sequential Math -> Optimized Chain
-            else:
-                ops = value.ops
-                source = value.source
-
-                if ops:
-                    # OPTIMIZATION: Use 3-Argument Method for the first step.
-                    # Instead of: Assign(T, A) -> Subtract(T, B)
-                    # We do:      Subtract(T, A, B)
-                    first_method_name, first_val, _ = ops[0]
-                    method = getattr(_SetVariable, first_method_name)
-                    
-                    # Generate: SetVariable.Subtract(Target, Source, Amount)
-                    if isinstance(first_val, list):
-                        ctx.append(method(var_obj, [source, *first_val]))
-                    else:
-                        ctx.append(method(var_obj, [source, first_val]))
-                    
-                    # Process remaining operations (chained to the Target)
-                    # e.g. T = A - B - C  becomes:
-                    # 1. Subtract(T, A, B)  (Result is now in T)
-                    # 2. Subtract(T, C)     (Subtract C from T)
-                    for method_name, val, _ in ops[1:]:
-                        method = getattr(_SetVariable, method_name)
-                        if isinstance(val, list): 
-                            ctx.append(method(var_obj, *val))
-                        else: 
-                            ctx.append(method(var_obj, val))
-                
-                else:
-                    # No ops (just v.x = v.y) -> Standard Assign
-                    ctx.append(_SetVariable.Assign(var_obj, source))
-
-            return 
-
-        # --- CASE 2: OPTIMISTIC OP (Rollback) ---
-        if isinstance(value, OptimisticOp):
-            if value.created_block is not None:
-                if isinstance(value.created_block, list):
-                    for b in reversed(value.created_block):
-                        if ctx and ctx[-1] is b: 
-                            ctx.pop()
-                elif ctx and ctx[-1] is value.created_block:
-                    ctx.pop()
-
-            method = getattr(_SetVariable, value.name)
-            result = method(var_obj, *value.args)
-            if isinstance(result, list):
-                ctx.extend(result)
-            else: 
-                ctx.append(result)
-            return
-
-        # --- CASE 3: STANDARD ASSIGN ---
-        result = _SetVariable.Assign(var_obj, value)
-        if isinstance(result, list): 
-            ctx.extend(result)
-        else: 
-            ctx.append(result)
-
-    def __getattr__(self, name):
-        if name in self._vars: 
-            # FIX: Return the RAW Var object (No Proxy)
-            return self._vars[name]
-        raise AttributeError(f"Var '{name}' not found.")
+        formatted_name = name.replace("_", "-")
+        var_obj = self.__call__(formatted_name)
+        _perform_assignment(var_obj, value)

@@ -33,12 +33,6 @@ atexit.register(_check_unclosed_blocks)
 
 class ContextBlock:
     def __init__(self, start_blocks, close_block=None, name="Block"):
-        self.start_blocks = start_blocks if isinstance(start_blocks, list) else [start_blocks]
-        self.close_block = close_block
-        self.name = name
-        self._is_entered = False
-        
-        self.origin_file = "Unknown"
         self.origin_line = 0
         
         try:
