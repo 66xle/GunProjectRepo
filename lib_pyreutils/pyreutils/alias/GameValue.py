@@ -7,8 +7,18 @@ class GameValue(_GameValue):
         """
         Gets the speed at which the target is moving (not walking) in each direction.
 
-        :param Target target: The target to retrieve the velocity from. Defaults to the default target.
-        :return Vector: The velocity of the target.
+        :param Target target: The target to retrieve the velocity from.
+        :return Vector: Movement velocity
+        """
+        return GameValue('Velocity', target.get_string_value())
+    
+    @staticmethod
+    def Direction(target: Target=DEFAULT_TARGET):
+        """
+        Gets the looking direction of a target's location as a vector.
+
+        :param Target target: The target to retrieve the direction from.
+        :return Vector: Direction vector (length of 1)
         """
         return GameValue('Velocity', target.get_string_value())
     
@@ -17,8 +27,18 @@ class GameValue(_GameValue):
         """
         Retrieves the location of the specified target.
 
-        :param Target target: The target to retrieve the location from. Defaults to the default target.
-        :return Location: The location of the target.
+        :param Target target: The target to retrieve the location from.
+        :return Location: Location and rotation, at feet height.
         """
         return GameValue('Location', target.get_string_value())
+    
+    @staticmethod
+    def EyeLocation(target: Target=DEFAULT_TARGET):
+        """
+        Gets a target's location, but adjusted to its eye height.
+
+        :param Target target: The target to retrieve the eye location from.
+        :return Location: The eye location and rotation.
+        """
+        return GameValue('Eye Location', target.get_string_value())
 
