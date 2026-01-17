@@ -1,48 +1,115 @@
-from dfpyre import *
+from pyreutils.wrapper import *
 
-Function('SwapWeapon', Parameter('bool-InitWeapon', ParameterType.NUMBER, optional=True, default_value=0, slot=0), codeblocks=[
-    SetVariable.Assign(Variable('num-HotBarSlot', 'local', slot=0), GameValue('Event Hotbar Slot', slot=1)),
-    IfVariable.Equals(Variable('bool-InitWeapon', 'line', slot=0), Number(1, slot=1), codeblocks=[
-        SetVariable.Assign(Variable('num-HotBarSlot', 'local', slot=0), Number(1, slot=1))
-    ]),
-    IfVariable.Equals(Variable('%default bool-PlayingAnimation', slot=0), Number(1, slot=1), codeblocks=[
-        SetVariable.Assign(Variable('%default bool-CancelAnimation', slot=0), Number(1, slot=1), Variable('num-HotBarSlot', 'local', slot=2)),
-        Repeat.While(Variable('%default bool-PlayingAnimation', slot=0), Number(1, slot=1), sub_action='=', codeblocks=[
+num_HotBarSlot   = local('num-HotBarSlot')
+item_MainHand   = local('item-MainHand')
+dict_GunTag     = local('dict-GunTag')
+num_RecoilTime  = local('num-RecoilTime')
+
+# ─── Local Vars ─────────────────────────────────────────────
+num_HotBarSlot      = local('num-HotBarSlot')
+item_MainHand       = local('item-MainHand')
+dict_GunTag         = local('dict-GunTag')
+num_RecoilTime      = local('num-RecoilTime')
+
+# ─── Default (Global) Vars ──────────────────────────────────
+bool_PlayingAnim    = Variable('%default bool-PlayingAnimation')
+bool_CancelAnim     = Variable('%default bool-CancelAnimation')
+
+def_item_MainHand   = Variable('%default item-MainHand')
+def_num_HotbarSlot  = Variable('%default num-HotbarSlot')
+
+def_num_Recoil      = Variable('%default num-Recoil')
+def_num_GunID       = Variable('%default num-GunID')
+def_num_RateOfFire  = Variable('%default num-GunRateOfFire')
+def_num_Distance    = Variable('%default num-GunDistance')
+def_num_Spread      = Variable('%default num-Spread')
+def_num_AimSpread   = Variable('%default num-AimSpread')
+def_num_AimRecoil   = Variable('%default num-AimRecoil')
+def_num_HipRecoil   = Variable('%default num-HipRecoil')
+def_num_IncreaseRec = Variable('%default num-IncreaseRecoil')
+def_num_Damage      = Variable('%default num-Damage')
+def_num_Bullets     = Variable('%default num-Bullets')
+
+def_num_ReloadMDMax = Variable('%default num-ReloadModelDataMax')
+def_num_AttackMDMax = Variable('%default num-AttackModelDataMax')
+def_num_ReloadLoopS = Variable('%default num-ReloadLoopStart')
+def_num_ReloadLoopE = Variable('%default num-ReloadLoopEnd')
+
+def_str_GunName     = Variable('%default str-GunName')
+def_str_Type        = Variable('%default str-Type')
+def_str_FireType    = Variable('%default str-FireType')
+def_str_ReloadType  = Variable('%default str-ReloadType')
+
+
+with Function(
+    'SwapWeapon',
+    Parameter('bool-InitWeapon', ParameterType.NUMBER, optional=True, default_value=0)
+) as f:
+
+    num_HotBarSlot.v = GameValue('Event Hotbar Slot')
+
+    with IfVariable.Equals(line('bool-InitWeapon'), 1):
+        num_HotBarSlot.v = 1
+
+    with IfVariable.Equals(bool_PlayingAnim, 1):
+        bool_CancelAnim.v = 1
+        with Repeat.While(bool_PlayingAnim, 1, sub_action='='):
             Control.Wait()
-        ])
-    ]),
-    Control.Wait(),
-    SetVariable.GetListValue(Variable('item-MainHand', 'local', slot=0), GameValue('Hotbar Items', slot=1), Variable('num-HotBarSlot', 'local', slot=2)),
-    IfVariable.ItemHasTag(Variable('item-MainHand', 'local', slot=0), String('id', slot=1), inverted=True, codeblocks=[
+
+    Control.Wait()
+
+    item_MainHand.v = SetVariable.GetListValue(
+        GameValue('Hotbar Items'),
+        num_HotBarSlot
+    )
+
+    with IfVariable.ItemHasTag(item_MainHand, 'id', inverted=True):
         Control.Return()
-    ]),
-    SetVariable.Assign(Variable('%default num-Recoil', slot=0), Number(0, slot=1)),
-    SetVariable.SetModelDataNums(Variable('%default item-MainHand', slot=0), Number(1, slot=1)),
-    PlayerAction.SetSlotItem(Variable('%default item-MainHand', slot=0), Variable('%default num-HotbarSlot', slot=1)),
-    SetVariable.Assign(Variable('%default item-MainHand', slot=0), Variable('item-MainHand', 'local', slot=1)),
-    SetVariable.Assign(Variable('%default num-HotbarSlot', slot=0), GameValue('Event Hotbar Slot', slot=1)),
-    SetVariable.GetAllItemTags(Variable('dict-GunTag', 'local', slot=0), Variable('%default item-MainHand', slot=1)),
-    SetVariable.GetDictValue(Variable('%default num-GunID', slot=0), Variable('dict-GunTag', 'local', slot=1), String('id', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-GunRateOfFire', slot=0), Variable('dict-GunTag', 'local', slot=1), String('rof', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-GunDistance', slot=0), Variable('dict-GunTag', 'local', slot=1), String('dist', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-Spread', slot=0), Variable('dict-GunTag', 'local', slot=1), String('max_spread', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-AimSpread', slot=0), Variable('dict-GunTag', 'local', slot=1), String('aim_spread', slot=2)),
-    SetVariable.GetDictValue(Variable('num-RecoilTime', 'local', slot=0), Variable('dict-GunTag', 'local', slot=1), String('recoil_time', slot=2)),
-    SetVariable.Assign(Variable('%default num-AimRecoil', slot=0), Number('%math(%var(%default num-AimSpread) / %math(%var(num-RecoilTime) * 20))', slot=1)),
-    SetVariable.Assign(Variable('%default num-HipRecoil', slot=0), Number('%math(%var(%default num-Spread) / %math(%var(num-RecoilTime) * 20))', slot=1)),
-    SetVariable.Assign(Variable('%default num-IncreaseRecoil', slot=0), Variable('%default num-HipRecoil', slot=1)),
-    SetVariable.GetDictValue(Variable('%default str-GunName', slot=0), Variable('dict-GunTag', 'local', slot=1), String('name', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-Damage', slot=0), Variable('dict-GunTag', 'local', slot=1), String('damage', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-ReloadModelDataMax', slot=0), Variable('dict-GunTag', 'local', slot=1), String('reload_modeldata_max', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-AttackModelDataMax', slot=0), Variable('dict-GunTag', 'local', slot=1), String('attack_modeldata_max', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-Bullets', slot=0), Variable('dict-GunTag', 'local', slot=1), String('bullets', slot=2)),
-    SetVariable.GetDictValue(Variable('%default str-Type', slot=0), Variable('dict-GunTag', 'local', slot=1), String('type', slot=2)),
-    SetVariable.GetDictValue(Variable('%default str-FireType', slot=0), Variable('dict-GunTag', 'local', slot=1), String('fire_type', slot=2)),
-    SetVariable.GetDictValue(Variable('%default str-ReloadType', slot=0), Variable('dict-GunTag', 'local', slot=1), String('reload_type', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-ReloadLoopStart', slot=0), Variable('dict-GunTag', 'local', slot=1), String('reload_loop_start', slot=2)),
-    SetVariable.GetDictValue(Variable('%default num-ReloadLoopEnd', slot=0), Variable('dict-GunTag', 'local', slot=1), String('reload_loop_end', slot=2)),
-    PlayerAction.SetEquipment(Item('ender_eye', slot=0), equipment_slot='Off hand'),
-    IfVariable.StringMatches(Variable('%default str-Type', slot=0), String('sniper', slot=1), codeblocks=[
-        PlayerAction.ClearItems(Item('ender_eye', slot=0))
-    ])
-]).build_and_send()
+
+    def_num_Recoil.v = 0
+    SetVariable.SetModelDataNums(def_item_MainHand, 1)
+    PlayerAction.SetSlotItem(def_item_MainHand, def_num_HotbarSlot)
+
+    def_item_MainHand.v  = item_MainHand
+    def_num_HotbarSlot.v = GameValue('Event Hotbar Slot')
+
+    dict_GunTag.v = SetVariable.GetAllItemTags(def_item_MainHand)
+
+    def_num_GunID.v        = SetVariable.GetDictValue(dict_GunTag, 'id')
+    def_num_RateOfFire.v   = SetVariable.GetDictValue(dict_GunTag, 'rof')
+    def_num_Distance.v     = SetVariable.GetDictValue(dict_GunTag, 'dist')
+
+# region Recoil
+
+    def_num_Spread.v       = SetVariable.GetDictValue(dict_GunTag, 'max_spread')
+    def_num_AimSpread.v    = SetVariable.GetDictValue(dict_GunTag, 'aim_spread')
+    num_RecoilTime.v       = SetVariable.GetDictValue(dict_GunTag, 'recoil_time')
+
+    def_num_AimRecoil.v = Number(
+        '%math(%var(%default num-AimSpread) / %math(%var(num-RecoilTime) * 20))'
+    )
+    def_num_HipRecoil.v = Number(
+        '%math(%var(%default num-Spread) / %math(%var(num-RecoilTime) * 20))'
+    )
+    def_num_IncreaseRec.v = def_num_HipRecoil
+
+# endregion
+
+    def_str_GunName.v     = SetVariable.GetDictValue(dict_GunTag, 'name')
+    def_num_Damage.v      = SetVariable.GetDictValue(dict_GunTag, 'damage')
+    def_num_ReloadMDMax.v = SetVariable.GetDictValue(dict_GunTag, 'reload_modeldata_max')
+    def_num_AttackMDMax.v = SetVariable.GetDictValue(dict_GunTag, 'attack_modeldata_max')
+    def_num_Bullets.v     = SetVariable.GetDictValue(dict_GunTag, 'bullets')
+    def_str_Type.v        = SetVariable.GetDictValue(dict_GunTag, 'type')
+    def_str_FireType.v    = SetVariable.GetDictValue(dict_GunTag, 'fire_type')
+    def_str_ReloadType.v  = SetVariable.GetDictValue(dict_GunTag, 'reload_type')
+    def_num_ReloadLoopS.v = SetVariable.GetDictValue(dict_GunTag, 'reload_loop_start')
+    def_num_ReloadLoopE.v = SetVariable.GetDictValue(dict_GunTag, 'reload_loop_end')
+
+    PlayerAction.SetEquipment(Item('ender_eye'), equipment_slot='Off hand')
+
+    with IfVariable.StringMatches(def_str_Type, 'sniper'):
+        PlayerAction.ClearItems(Item('ender_eye'))
+
+f.build_and_send()
+

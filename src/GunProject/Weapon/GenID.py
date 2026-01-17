@@ -1,13 +1,22 @@
-from dfpyre import *
+from pyreutils.wrapper import *
 
-Function('GenID', codeblocks=[
-    Repeat.ForEach(Variable('item-Weapon', 'local', slot=0), Variable('list-Weapons', slot=1), codeblocks=[
-        Control.Wait(Number(0, slot=0)),
-        SetVariable.GetItemTag(Variable('num-Clip', 'local', slot=0), Variable('item-Weapon', 'local', slot=1), String('clip', slot=2)),
-        SetVariable.GetItemTag(Variable('num-Ammo', 'local', slot=0), Variable('item-Weapon', 'local', slot=1), String('ammo', slot=2)),
-        SetVariable.Increment(Variable('num-ID', slot=0), Number(1, slot=1)),
-        SetVariable.SetDictValue(Variable('dict-CurrentClip', slot=0), String('%var(num-ID)', slot=1), Variable('num-Clip', 'local', slot=2)),
-        SetVariable.SetDictValue(Variable('dict-MaxAmmo', slot=0), String('%var(num-ID)', slot=1), Variable('num-Ammo', 'local', slot=2)),
-        SetVariable.SetItemTag(Variable('item-Weapon', 'local', slot=0), String('id', slot=1), Variable('num-ID', slot=2))
-    ])
-]).build_and_send()
+item_Weapon     = local('item-Weapon')
+num_Clip        = local('num-Clip')
+num_Ammo        = local('num-Ammo')
+num_ID          = local('num-ID')
+dict_CurrentClip = local('dict-CurrentClip')
+dict_MaxAmmo     = local('dict-MaxAmmo')
+
+list_Weapons = Variable('list-Weapons')
+
+with Function('GenID') as f:
+    with Repeat.ForEach(item_Weapon, list_Weapons):
+        Control.Wait(Number(0))
+        num_Clip.v = SetVariable.GetItemTag(item_Weapon, String('clip'))
+        num_Ammo.v = SetVariable.GetItemTag(item_Weapon, String('ammo'))
+        num_ID.v  += 1
+        SetVariable.SetDictValue(dict_CurrentClip, String('%var(num-ID)'), num_Clip)
+        SetVariable.SetDictValue(dict_MaxAmmo, String('%var(num-ID)'), num_Ammo)
+        SetVariable.SetItemTag(item_Weapon, String('id'), num_ID)
+
+f.build_and_send()
