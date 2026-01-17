@@ -1,5 +1,8 @@
 from pyreutils.wrapper import *
 
+BULLET_SCALE = 0.075
+BULLET_3D_SCALE = 0.001
+
 # ─── Local Vars ─────────────────────────────────────────────
 num_Pitch   = local('num-Pitch')
 num_Yaw     = local('num-Yaw')
@@ -10,49 +13,48 @@ loc_CenterXZ = local('loc-CenterXZ')
 str_BulletUUID = local('str-BulletUUID')
 
 with Process('BulletHole') as p:
-
     # Get hit orientation
-    SetVariable.GetCoord(num_Pitch, loc_Hit, coordinate='Pitch')
-    SetVariable.GetCoord(num_Yaw, loc_Hit, coordinate='Yaw')
+    num_Pitch.v = SetV.GetPitch(loc_Hit)
+    num_Yaw.v = SetV.GetYaw(loc_Hit)
 
-    with IfVariable.Equals(num_Pitch, 0):
-        SetVariable.AlignLoc(loc_CenterXZ, loc_Hit, coordinates='X and Z')
+    with If.Equals(num_Pitch, 0):
+        loc_CenterXZ.v = SetV.AlignXZ(loc_Hit)
 
-        with IfVariable.Equals(num_Yaw, [90, -90]):
-            SetVariable.GetCoord(num_X, loc_CenterXZ)
-            SetVariable.SetCoord(loc_Hit, num_X)
+        with If.Equals(num_Yaw, [90, -90]):
+            num_X.v = SetV.GetCoordX(loc_CenterXZ)
+            loc_Hit.v = SetV.SetCoordX(loc_Hit, num_X)
         with Else():
-            SetVariable.GetCoord(num_Z, loc_CenterXZ, coordinate='Z')
-            SetVariable.SetCoord(loc_Hit, num_Z, coordinate='Z')
+            num_Z.v = SetV.GetCoordZ(loc_CenterXZ)
+            loc_Hit.v = SetV.SetCoordZ(loc_Hit, num_Z)
 
     with Else():
-        SetVariable.AlignLoc(loc_Hit, coordinates='Only Y')
+        loc_Hit.v = SetV.AlignY(loc_Hit)
 
     # Shift block slightly in direction
-    SetVariable.ShiftInDirection(loc_Hit, 0.501)
+    loc_Hit.v = SetV.ShiftInDirection(loc_Hit, 0.501)
 
     # Spawn the bullet block
-    GameAction.SpawnBlockDisp(loc_Hit, Item('black_concrete'))
+    Game.SpawnBlockDisp(loc_Hit, Item('black_concrete'))
 
     # Adjust entity display scale and translation based on orientation
-    with IfVariable.Equals(num_Pitch, 0):
-        with IfVariable.Equals(num_Yaw, [90, -90]):
-            EntityAction.DisplayScale(0.001, 0.075, 0.075)
-            EntityAction.DispTranslation(0, -0.0375, -0.0375)
+    with If.Equals(num_Pitch, 0):
+        with If.Equals(num_Yaw, [90, -90]):
+            Entity.DisplayScale(BULLET_3D_SCALE, BULLET_SCALE, BULLET_SCALE)
+            Entity.DispTranslation(0, -BULLET_SCALE/2, -BULLET_SCALE/2)
         with Else():
-            EntityAction.DisplayScale(0.075, 0.075, 0.001)
-            EntityAction.DispTranslation(-0.0375, -0.0375, 0)
+            Entity.DisplayScale(BULLET_SCALE, BULLET_SCALE, BULLET_3D_SCALE)
+            Entity.DispTranslation(-BULLET_SCALE/2, -BULLET_SCALE/2, 0)
     with Else():
-        EntityAction.DisplayScale(0.075, 0.001, 0.075)
-        EntityAction.DispTranslation(-0.0375, 0, -0.0375)
+        Entity.DisplayScale(BULLET_SCALE, BULLET_3D_SCALE, BULLET_SCALE)
+        Entity.DispTranslation(-BULLET_SCALE/2, 0, -BULLET_SCALE/2)
 
     # Store UUID for removal later
-    SetVariable.Assign(str_BulletUUID, GameValue('UUID', 'LastEntity'))
+    str_BulletUUID.v = GameValue.UUID(Target.LAST_ENTITY)
 
-    Control.Wait(5, time_unit='Seconds')
+    Control.WaitSeconds(5)
 
     # Remove bullet entity
-    SelectObject.EntityName(str_BulletUUID)
-    EntityAction.Remove()
+    Select.EntityName(str_BulletUUID)
+    Entity.Remove()
 
 p.build_and_send()

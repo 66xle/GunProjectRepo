@@ -12,7 +12,7 @@ def_num_ReloadLoopStart = game('%default num-ReloadLoopStart')
 with Function('ReloadStart') as f:
 
     # Only proceed if reload type is 'bullet'
-    with IfVariable.StringMatches(def_str_ReloadType, 'bullet'):
+    with If.StringMatches(def_str_ReloadType, 'bullet'):
 
         # Setup reload loop
         num_ReloadLoop.v = local('num-ClipDifference')  # store original clip difference in loop count

@@ -26,14 +26,14 @@ def_str_ReloadType      = game('%default str-ReloadType')
 with Function('FireGun',Parameter('num-WaitForFireModel', ParameterType.NUMBER)) as f:
 
     # Ensure holding a gun
-    with IfVariable.ItemHasTag(GameValue('Main Hand Item'), 'id', inverted=True):
+    with If.ItemHasTag(GameValue.MainHandItem(), 'id', inverted=True):
         Control.Return()
 
 
     # Block while animation is playing
-    with IfVariable.Equals(bool_PlayingAnim, 1):
-        with IfVariable.Equals(bool_IsReloading, 1):
-            with IfVariable.StringMatches(def_str_ReloadType, 'bullet'):
+    with If.Equals(bool_PlayingAnim, 1):
+        with If.Equals(bool_IsReloading, 1):
+            with If.StringMatches(def_str_ReloadType, 'bullet'):
                 bool_FinishReloading.v = 1
                 Control.Return()
             Control.Return()
@@ -43,7 +43,7 @@ with Function('FireGun',Parameter('num-WaitForFireModel', ParameterType.NUMBER))
     # Ammo checks
     CallFunction('GetClipAmmo')
 
-    with IfVariable.LessEqual(num_CurrentClip, 0):
+    with If.LessEqual(num_CurrentClip, 0):
         CallFunction('Reload')
         Control.Return()
 
@@ -54,28 +54,27 @@ with Function('FireGun',Parameter('num-WaitForFireModel', ParameterType.NUMBER))
 
 
     # Shooting sound (near + far)
-    snd_Shoot.v = SetVariable.SetCustomSound(
+    snd_Shoot.v = SetV.SetCustomSound(
         Sound('Cherry Wood Place', 1.0, 2.0),
         'custom.ranged.%var(%default str-GunName).shoot'
     )
 
-    loc_FarSound.v = SetVariable.ShiftOnAxis(GameValue('Location'), 0, coordinate='Y')
+    loc_FarSound.v = SetV.ShiftY(GameValue.Location(), 0)
 
-    PlayerAction.PlaySound(snd_Shoot, target=Target.DEFAULT)
+    Player.PlaySound(snd_Shoot, target=Target.DEFAULT)
 
-    SelectObject.PlayersCond('%default', sub_action='PNameEquals', inverted=True)
-    SetVariable.SetSoundVolume(snd_Shoot, 0.5)
-    PlayerAction.PlaySound(snd_Shoot, loc_FarSound, target=Target.SELECTION)
-    SelectObject.Reset()
+    Select.PlayersCond('%default', sub_action='PNameEquals', inverted=True)
+    snd_Shoot.v = SetV.SetSoundVolume(0.5)
+    Player.PlaySound(snd_Shoot, loc_FarSound, target=Target.SELECTION)
+    Select.Reset()
 
 
     # Cooldown + ammo reduction
-    PlayerAction.SetItemCooldown(def_item_MainHand, def_num_GunRateOfFire)
+    Player.SetItemCooldown(def_item_MainHand, def_num_GunRateOfFire)
     CallFunction('ReduceClip')
 
-
     # Fire mode handling
-    with IfVariable.StringMatches(def_str_FireType, 'auto'):
+    with If.StringMatches(def_str_FireType, 'auto'):
         num_Wait.v = line('num-WaitForFireModel')
         StartProcess('FireModel', tags={'Local Variables':'Copy'})
     with Else():

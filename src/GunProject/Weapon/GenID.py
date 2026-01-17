@@ -12,11 +12,11 @@ list_Weapons = game('list-Weapons')
 with Function('GenID') as f:
     with Repeat.ForEach(item_Weapon, list_Weapons):
         Control.Wait(0)
-        num_Clip.v = SetVariable.GetItemTag(item_Weapon, 'clip')
-        num_Ammo.v = SetVariable.GetItemTag(item_Weapon, 'ammo')
+        num_Clip.v = SetV.GetItemTag(item_Weapon, 'clip')
+        num_Ammo.v = SetV.GetItemTag(item_Weapon, 'ammo')
         num_ID.v += 1
-        SetVariable.SetDictValue(dict_CurrentClip, '%var(num-ID)', num_Clip)
-        SetVariable.SetDictValue(dict_MaxAmmo, '%var(num-ID)', num_Ammo)
-        SetVariable.SetItemTag(item_Weapon, 'id', num_ID)
+        dict_CurrentClip.v = SetV.SetDictValue('%var(num-ID)', num_Clip)
+        dict_MaxAmmo.v = SetV.SetDictValue('%var(num-ID)', num_Ammo)
+        item_Weapon.v = SetV.SetItemTag('id', num_ID)
 
 f.build_and_send()

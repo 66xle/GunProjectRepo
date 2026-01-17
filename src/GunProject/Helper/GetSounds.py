@@ -12,11 +12,11 @@ def_item_MainHand = game('%default item-MainHand')
 with Function('GetSounds', Parameter('str-Type', ParameterType.STRING)) as f:
 
     # Get sounds and model data from main hand item
-    SetVariable.GetItemTag(str_Sounds, def_item_MainHand, '%var(str-Type)_sounds')
-    SetVariable.GetItemTag(str_ModelData, def_item_MainHand, '%var(str-Type)_modeldata')
+    str_Sounds.v = SetV.GetItemTag(def_item_MainHand, '%var(str-Type)_sounds')
+    str_ModelData.v = SetV.GetItemTag(def_item_MainHand, '%var(str-Type)_modeldata')
 
     # Split strings into lists
-    SetVariable.SplitString(list_Sounds, str_Sounds, '-')
-    SetVariable.SplitString(list_ModelData, str_ModelData, '-')
+    list_Sounds.v = SetV.SplitString(str_Sounds, '-')
+    list_ModelData.v = SetV.SplitString(str_ModelData, '-')
 
 f.build_and_send()

@@ -5,14 +5,14 @@ item_IdleModel = local('item-IdleModel')
 
 with Process('FireModel') as f:
     # Set firing model
-    SetVariable.SetModelDataNums(item_FireModel, '%default item-MainHand', 2)
-    PlayerAction.SetSlotItem(item_FireModel, '%default num-HotbarSlot')
+    item_FireModel.v = SetV.SetModelDataNums('%default item-MainHand', 2)
+    Player.SetSlotItem(item_FireModel, Num('%var(%default num-HotbarSlot)'))
 
     # Wait for firing duration
-    Control.Wait('num-Wait')
+    Control.Wait(Num('%var(num-Wait)'))
 
     # Set idle model
-    SetVariable.SetModelDataNums(item_IdleModel, '%default item-MainHand', 1)
-    PlayerAction.SetSlotItem(item_IdleModel, '%default num-HotbarSlot')
+    item_IdleModel.v = SetV.SetModelDataNums('%default item-MainHand', 1)
+    Player.SetSlotItem(item_IdleModel, Num('%var(%default num-HotbarSlot)'))
 
 f.build_and_send()

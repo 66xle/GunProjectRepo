@@ -24,32 +24,32 @@ num_ID                  = game('%default num-GunID')
 with Function('Reload') as f:
 
     # Check if main hand has a gun
-    with IfVariable.ItemHasTag(GameValue('Main Hand Item'), 'id', inverted=True):
+    with If.ItemHasTag(GameValue.MainHandItem(), 'id', inverted=True):
         Control.Return()
 
     # Return if animation playing
-    with IfVariable.Equals(def_bool_PlayingAnim, 1):
+    with If.Equals(def_bool_PlayingAnim, 1):
         Control.Return()
 
     # Get ammo and clip info
     CallFunction('GetClipAmmo')
 
     # Return if no ammo left
-    with IfVariable.LessEqual(num_CurrentAmmo, 0):
+    with If.LessEqual(num_CurrentAmmo, 0):
         Control.Return()
 
     # Get max clip for weapon
-    SetVariable.GetItemTag(num_MaxClip, def_item_MainHand, 'clip')
+    num_MaxClip.v =SetV.GetItemTag(def_item_MainHand, 'clip')
 
     # Return if clip full
-    with IfVariable.Equals(num_CurrentClip, num_MaxClip):
+    with If.Equals(num_CurrentClip, num_MaxClip):
         Control.Return()
 
     # Calculate amount to reload
-    SetVariable.Subtract(num_ClipDifference, [num_MaxClip, num_CurrentClip])
-
+    num_ClipDifference.v = num_MaxClip - num_CurrentClip
+    
     # Adjust if ammo less than needed
-    with IfVariable.LessThan(num_CurrentAmmo, num_ClipDifference):
+    with If.LessThan(num_CurrentAmmo, num_ClipDifference):
         num_ClipDifference.v = num_CurrentAmmo
 
     # Start reload loop
@@ -62,15 +62,15 @@ with Function('Reload') as f:
         Control.Wait(0)
 
         # Animate reload
-        with IfVariable.StringMatches(def_str_ReloadType, 'bullet'):
+        with If.StringMatches(def_str_ReloadType, 'bullet'):
             CallFunction('AnimModel', ('reload', def_num_ReloadLoopStart, def_num_ReloadLoopEnd))
         with Else():
             CallFunction('AnimModel', ('reload', 100, def_num_ReloadModelDataMax))
 
         # Handle cancel reload
-        with IfVariable.Equals(def_bool_CancelReload, 1):
+        with If.Equals(def_bool_CancelReload, 1):
             def_bool_CancelReload.v = 0
-            with IfVariable.StringMatches(def_str_ReloadType, 'bullet'):
+            with If.StringMatches(def_str_ReloadType, 'bullet'):
                 Control.StopRepeat()
             def_bool_IsReloading.v = 0
             Control.Return()
@@ -80,11 +80,11 @@ with Function('Reload') as f:
         num_CurrentClip += num_ClipDifference
 
         # Update dictionaries
-        SetVariable.SetDictValue(dict_CurrentClip, '%var(num-ID)', num_CurrentClip)
-        SetVariable.SetDictValue(dict_MaxAmmo, '%var(num-ID)', num_CurrentAmmo)
+        dict_CurrentClip.v = SetV.SetDictValue('%var(num-ID)', num_CurrentClip)
+        dict_MaxAmmo.v = SetV.SetDictValue('%var(num-ID)', num_CurrentAmmo)
 
         # Finish reload if flagged
-        with IfVariable.Equals(def_bool_FinishReloading, 1):
+        with If.Equals(def_bool_FinishReloading, 1):
             def_bool_FinishReloading.v = 0
             Control.StopRepeat()
 

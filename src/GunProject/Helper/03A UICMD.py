@@ -12,20 +12,20 @@ txt_UIAmmoOffset = save('%uuid txt-UIAmmoOffset')
 with Function('03A UICMD') as f:
 
     with IfGame.CommandEquals('uiammo', check_mode='Check beginning'):
-        num_Length.v = SetVariable.ListLength(GameValue('Event Command Arguments'))
+        num_Length.v = SetV.ListLength(GameValue.EventCommandArguments())
 
-        with IfVariable.NotEqual(num_Length, 2):
-            PlayerAction.SendMessage(Text('Invalid arguments'))
+        with If.NotEqual(num_Length, 2):
+            Player.SendMessage(Text('Invalid arguments'))
             Control.End()
 
-        str_Offset.v = SetVariable.GetListValue(GameValue('Event Command Arguments'), 2)
-        num_Offset.v = SetVariable.ParseNumber(str_Offset)
+        str_Offset.v = SetV.GetListValue(GameValue.EventCommandArguments(), 2)
+        num_Offset.v = SetV.ParseNumber(str_Offset)
 
         CallFunction('BuildOffset', (num_Offset))
         
         txt_UIAmmoOffset.v = txt_TranslateOffset
 
-        PlayerAction.SendMessage([Text('Offset set to:'), num_Offset])
+        Player.SendMessage([Text('Offset set to:'), num_Offset])
         Control.End()
 
 f.build_and_send()

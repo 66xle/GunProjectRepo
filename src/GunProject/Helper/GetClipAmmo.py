@@ -11,10 +11,10 @@ dict_MaxAmmo = local('dict-MaxAmmo')
 with Function('GetClipAmmo') as f:
 
     # Get weapon ID from main hand item
-    SetVariable.GetItemTag(num_ID, '%default item-MainHand', 'id')
+    num_ID.v = SetV.GetItemTag('%default item-MainHand', 'id')
 
     # Get current clip and max ammo from dicts using weapon ID
-    SetVariable.GetDictValue(num_CurrentClip, dict_CurrentClip, '%var(num-ID)')
-    SetVariable.GetDictValue(num_CurrentAmmo, dict_MaxAmmo, '%var(num-ID)')
+    num_CurrentClip.v = SetV.GetDictValue(dict_CurrentClip, '%var(num-ID)')
+    num_CurrentAmmo.v = SetV.GetDictValue(dict_MaxAmmo, '%var(num-ID)')
 
 f.build_and_send()

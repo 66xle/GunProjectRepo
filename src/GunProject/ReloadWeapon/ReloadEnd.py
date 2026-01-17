@@ -14,7 +14,7 @@ def_str_ReloadType      = game('%default str-ReloadType')
 with Function('ReloadEnd') as f:
 
     # Only proceed if reload type is 'bullet'
-    with IfVariable.StringMatches(def_str_ReloadType, 'bullet'):
+    with If.StringMatches(def_str_ReloadType, 'bullet'):
 
         # Play final reload animation
         CallFunction(
@@ -23,8 +23,8 @@ with Function('ReloadEnd') as f:
         )
 
         # Reset weapon model to idle
-        SetVariable.SetModelDataNums(item_Weapon, def_item_MainHand, 1)
-        PlayerAction.SetSlotItem(item_Weapon, def_num_HotbarSlot)
+        item_Weapon.v = SetV.SetModelDataNums(def_item_MainHand, 1)
+        Player.SetSlotItem(item_Weapon, def_num_HotbarSlot)
 
         # Mark animation as finished
         def_bool_PlayingAnim.v = 0

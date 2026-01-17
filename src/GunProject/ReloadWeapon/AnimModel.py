@@ -40,13 +40,13 @@ with Function(
 
         # Play sound if model data exists in list
         with If.ListContains(list_ModelData, '%var(num-ModelID)'):
-            num_ListIndex.v = SetVariable.GetValueIndex(list_ModelData, '%var(num-ModelID)')
-            str_SoundRef.v = SetVariable.GetListValue(list_Sounds, num_ListIndex)
-            snd_CustomSound.v = SetVariable.SetCustomSound(
+            num_ListIndex.v = SetV.GetValueIndex(list_ModelData, '%var(num-ModelID)')
+            str_SoundRef.v = SetV.GetListValue(list_Sounds, num_ListIndex)
+            snd_CustomSound.v = SetV.SetCustomSound(
                 Sound('Pling', 1.0, 2.0),
                 'custom.ranged.%var(%default str-GunName).%var(str-Type)_%var(str-SoundRef)'
             )
-            PlayerAction.PlaySound(snd_CustomSound)
+            Player.PlaySound(snd_CustomSound)
 
         # Stop animation if cancel flag is set
         with If.Equals(def_bool_CancelAnim, 1):
@@ -55,16 +55,16 @@ with Function(
                 def_bool_CancelReload.v = 1
             Control.StopRepeat()
 
-        # Set the model data and slot item for the current frame
-        item_Weapon = SetVariable.SetModelDataNums(def_item_MainHand, line('num-ModelID'))
-        PlayerAction.SetSlotItem(item_Weapon, def_num_HotbarSlot)
+        # # Set the model data and slot item for the current frame
+        item_Weapon.v = SetV.SetModelDataNums(def_item_MainHand, line('num-ModelID'))
+        Player.SetSlotItem(item_Weapon, def_num_HotbarSlot)
 
     Control.Wait()
 
     # Reset animation state if reload type is 'clip'
     with If.StringMatches(def_str_ReloadType, 'clip'):
-        item_Weapon.v = SetVariable.SetModelDataNums(def_item_MainHand, 1)
-        PlayerAction.SetSlotItem(item_Weapon, def_num_HotbarSlot)
+        item_Weapon.v = SetV.SetModelDataNums(def_item_MainHand, 1)
+        Player.SetSlotItem(item_Weapon, def_num_HotbarSlot)
         def_bool_PlayingAnim.v = 0
 
 f.build_and_send()
