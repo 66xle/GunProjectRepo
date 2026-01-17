@@ -2,3 +2,7 @@
 __pycache__
 mytoken.txt
 output
+
+# pyreutils
+build/
+pyreutils.egg-info/

@@ -1,5 +1,0 @@
-pyproject.toml
-pyre_utils.egg-info/PKG-INFO
-pyre_utils.egg-info/SOURCES.txt
-pyre_utils.egg-info/dependency_links.txt
-pyre_utils.egg-info/top_level.txt
