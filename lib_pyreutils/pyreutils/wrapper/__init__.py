@@ -94,12 +94,16 @@ if TYPE_CHECKING:
     # The IDE sees the ORIGINAL classes.
     # This enables Auto-Complete and Ctrl+Click navigation to the library.
     SetVariable = _SetVariable
+    
     PlayerAction = _PlayerAction
-    IfPlayer = _IfPlayer
     GameAction = _GameAction
-    IfGame = _IfGame
     EntityAction = _EntityAction
+    
+    IfPlayer = _IfPlayer
+    IfGame = _IfGame
+    IfVariable = _IfVariable
     IfEntity = _IfEntity
+    
     SelectObject = _SelectObject
     Repeat = _Repeat
     Control = _Control
@@ -123,11 +127,13 @@ else:
     PlayerAction = AutoEmitter(_PlayerAction)
     GameAction = AutoEmitter(_GameAction)
     EntityAction = AutoEmitter(_EntityAction)
-    SelectObject = AutoEmitter(_SelectObject)
+    
     IfPlayer = AutoEmitter(_IfPlayer)
     IfVariable = AutoEmitter(_IfVariable)
     IfGame = AutoEmitter(_IfGame)
     IfEntity = AutoEmitter(_IfEntity)
+    
+    SelectObject = AutoEmitter(_SelectObject)
     Repeat = AutoEmitter(_Repeat)
     Control = AutoEmitter(_Control)
     
@@ -145,6 +151,36 @@ else:
     Else = _Else_Wrapper
     Function = _Function_Wrapper
     Process = _Process_Wrapper
+    
+SetV    = SetVariable
+SV      = SetVariable
+
+Select  = SelectObject
+SO      = SelectObject
+
+Player  = PlayerAction
+PA      = PlayerAction
+
+Entity  = EntityAction
+EA      = EntityAction
+
+Game    = GameAction
+GA      = GameAction
+
+GameV   = GameValue
+GV      = GameValue
+
+If      = IfVariable
+IV      = IfVariable
+
+IfP     = IfPlayer
+IF      = IfPlayer
+
+IfE     = IfEntity
+IE      = IfEntity
+
+IfG     = IfGame
+IG      = IfGame
     
 local = MagicVarHandler('local')
 """

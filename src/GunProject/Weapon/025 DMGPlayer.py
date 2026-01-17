@@ -1,5 +1,4 @@
 from pyreutils.wrapper import *
-from dfpyre import *
 
 loc_Position1    = local('loc-Position1')
 loc_Position2    = local('loc-Position2')
@@ -11,8 +10,8 @@ num_DealDMG      = local('num-DealDMG')
 num_SetHealth    = local('num-SetHealth')
 loc_Hit          = local('loc-Hit')
 
-victim_location  = GameValue('Location', 'Selection')
-victim_health    = GameValue('Current Health', 'Selection')
+victim_location  = GameValue.Location(Target.SELECTION)
+victim_health    = GameValue.CurrentHealth(Target.SELECTION)
 
 with Function('025 DMGPlayer', Parameter('num-Damage', ParameterType.NUMBER)) as f:
     loc_Position1.v = SetVariable.ShiftAllAxes(victim_location, -0.5, 0, 0.5)

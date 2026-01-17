@@ -30,7 +30,7 @@ with Function(
     CallFunction('GetSounds', (line('str-Type')))
 
     # Mark animation playing if reload type is 'clip'
-    with IfVariable.StringMatches(def_str_ReloadType, 'clip'):
+    with If.StringMatches(def_str_ReloadType, 'clip'):
         def_bool_PlayingAnim.v = 1
 
     # Animate through the model data range
@@ -39,32 +39,31 @@ with Function(
         Control.Wait()
 
         # Play sound if model data exists in list
-        with IfVariable.ListContains(list_ModelData, '%var(num-ModelID)'):
-            SetVariable.GetValueIndex(num_ListIndex, list_ModelData, '%var(num-ModelID)')
-            SetVariable.GetListValue(str_SoundRef, list_Sounds, num_ListIndex)
-            SetVariable.SetCustomSound(
-                snd_CustomSound,
+        with If.ListContains(list_ModelData, '%var(num-ModelID)'):
+            num_ListIndex.v = SetVariable.GetValueIndex(list_ModelData, '%var(num-ModelID)')
+            str_SoundRef.v = SetVariable.GetListValue(list_Sounds, num_ListIndex)
+            snd_CustomSound.v = SetVariable.SetCustomSound(
                 Sound('Pling', 1.0, 2.0),
                 'custom.ranged.%var(%default str-GunName).%var(str-Type)_%var(str-SoundRef)'
             )
             PlayerAction.PlaySound(snd_CustomSound)
 
         # Stop animation if cancel flag is set
-        with IfVariable.Equals(def_bool_CancelAnim, 1):
+        with If.Equals(def_bool_CancelAnim, 1):
             def_bool_CancelAnim.v = 0
-            with IfVariable.StringMatches(line('str-Type'), 'reload'):
+            with If.StringMatches(line('str-Type'), 'reload'):
                 def_bool_CancelReload.v = 1
             Control.StopRepeat()
 
         # Set the model data and slot item for the current frame
-        SetVariable.SetModelDataNums(item_Weapon, def_item_MainHand, line('num-ModelID'))
+        item_Weapon = SetVariable.SetModelDataNums(def_item_MainHand, line('num-ModelID'))
         PlayerAction.SetSlotItem(item_Weapon, def_num_HotbarSlot)
 
     Control.Wait()
 
     # Reset animation state if reload type is 'clip'
-    with IfVariable.StringMatches(def_str_ReloadType, 'clip'):
-        SetVariable.SetModelDataNums(item_Weapon, def_item_MainHand, 1)
+    with If.StringMatches(def_str_ReloadType, 'clip'):
+        item_Weapon.v = SetVariable.SetModelDataNums(def_item_MainHand, 1)
         PlayerAction.SetSlotItem(item_Weapon, def_num_HotbarSlot)
         def_bool_PlayingAnim.v = 0
 

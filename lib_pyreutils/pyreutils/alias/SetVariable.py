@@ -220,6 +220,3 @@ class SetVariable(_SetVariable):
         return SetVariable.GetVectorComp(variable, location, "Z")
 
     # endregion GetVectorComp
-
-SetV = SetVariable
-SV = SetVariable

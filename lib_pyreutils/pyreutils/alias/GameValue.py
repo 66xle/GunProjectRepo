@@ -41,4 +41,16 @@ class GameValue(_GameValue):
         :return Location: The eye location and rotation.
         """
         return GameValue('Eye Location', target.get_string_value())
+    
+    @staticmethod
+    def CurrentHealth(target: Target=DEFAULT_TARGET):
+        """
+        Gets the target's remaining health points.
+
+        :param Target target: The target to retrieve their current health.
+        :return Number: 0.0 (dead) up to the target's maximum health (20.0 by default)
+        """
+        return GameValue('Current Health', target.get_string_value())
+    
+    
 

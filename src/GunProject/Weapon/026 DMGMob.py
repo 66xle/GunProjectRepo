@@ -21,11 +21,11 @@ with Function('026 DMGMob', Parameter('num-Damage', ParameterType.NUMBER)) as f:
     num_YMobPos1.v  = SetVariable.GetCoordY(loc_Position1)
     num_YMobPos2.v  = SetVariable.GetCoordY(loc_Position2)
 
-    with IfVariable.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
+    with If.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
         num_YMobPos1.v += 1.5
         num_DMGDealt.v = num_Damage
 
-        with IfVariable.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
+        with If.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
             num_DMGDealt.v *= 2.5
 
         PlayerAction.PlaySound(Sound('Item Frame Add Item', 2.0, 2.0), target=Target.DEFAULT)
@@ -35,7 +35,7 @@ with Function('026 DMGMob', Parameter('num-Damage', ParameterType.NUMBER)) as f:
         num_Health.v = mob_health
         EntityAction.SetName(Text('%var(num-Health)'), target=Target.SELECTION)
 
-        with IfVariable.LessEqual(mob_health, 100):
+        with If.LessEqual(mob_health, 100):
             EntityAction.Remove()
 
         SelectObject.Reset()

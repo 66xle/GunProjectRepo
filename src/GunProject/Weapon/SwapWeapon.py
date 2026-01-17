@@ -98,12 +98,9 @@ with Function(
     def_num_AimSpread.v    = SetVariable.GetDictValue(dict_GunTag, 'aim_spread')
     num_RecoilTime.v       = SetVariable.GetDictValue(dict_GunTag, 'recoil_time')
 
-    def_num_AimRecoil.v = Number(
-        '%math(%var(%default num-AimSpread) / %math(%var(num-RecoilTime) * 20))'
-    )
-    def_num_HipRecoil.v = Number(
-        '%math(%var(%default num-Spread) / %math(%var(num-RecoilTime) * 20))'
-    )
+    def_num_AimRecoil.v = def_num_AimSpread / num_RecoilTime * 20
+    def_num_HipRecoil.v = def_num_Spread / num_RecoilTime * 20
+
     def_num_IncreaseRec.v = def_num_HipRecoil
 
     # Single fire handling
