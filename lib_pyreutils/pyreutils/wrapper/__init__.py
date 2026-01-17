@@ -8,21 +8,21 @@ from dfpyre import StartProcess as _StartProcess
 from dfpyre import Else as _Else
 from dfpyre import PlayerEvent as _PlayerEvent
 from dfpyre import EntityEvent as _EntityEvent
-from dfpyre import PlayerAction as _PlayerAction
-from dfpyre import GameAction as _GameAction
-from dfpyre import EntityAction as _EntityAction
-from dfpyre import SelectObject as _SelectObject
-from dfpyre import IfPlayer as _IfPlayer
-from dfpyre import IfVariable as _IfVariable
-from dfpyre import IfGame as _IfGame
-from dfpyre import IfEntity as _IfEntity
 from dfpyre import Repeat as _Repeat
-from dfpyre import Control as _Control
 from dfpyre import *
 
-# Import Custom SetVariable Subclass
-from ..alias.SetVariable import SetVariable as _SetVariable
-from ..alias import *
+# Import Aliases
+from ..alias.SetVariable  import SetVariable as _SetVariable
+from ..alias.PlayerAction import PlayerAction as _PlayerAction
+from ..alias.GameAction   import GameAction as _GameAction
+from ..alias.EntityAction import EntityAction as _EntityAction
+from ..alias.IfPlayer     import IfPlayer as _IfPlayer
+from ..alias.IfGame       import IfGame as _IfGame
+from ..alias.IfVariable   import IfVariable as _IfVariable
+from ..alias.IfEntity     import IfEntity as _IfEntity
+from ..alias.SelectObject import SelectObject as _SelectObject
+from ..alias.Control      import Control as _Control
+from ..alias              import *
 
 from .context import ContextBlock, _get_current_context
 from .emitter import AutoEmitter, HeaderEmitter
@@ -152,12 +152,17 @@ else:
     Function = _Function_Wrapper
     Process = _Process_Wrapper
     
+# Other
 SetV    = SetVariable
 SV      = SetVariable
 
 Select  = SelectObject
 SO      = SelectObject
 
+Ctrl    = Control
+C       = Control
+
+# Actions
 Player  = PlayerAction
 PA      = PlayerAction
 
@@ -167,9 +172,7 @@ EA      = EntityAction
 Game    = GameAction
 GA      = GameAction
 
-GameV   = GameValue
-GV      = GameValue
-
+# If Statements
 If      = IfVariable
 IV      = IfVariable
 

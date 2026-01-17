@@ -1,4 +1,5 @@
-from dfpyre import Variable, Location, Number
+from typing import Literal
+from dfpyre import Variable, Location, Number, Vector as DFVector
 from dfpyre import SetVariable as _SetVariable
 
 class SetVariable(_SetVariable):
@@ -220,3 +221,76 @@ class SetVariable(_SetVariable):
         return SetVariable.GetVectorComp(variable, location, "Z")
 
     # endregion GetVectorComp
+
+    # region AlignLoc
+
+    @staticmethod
+    def AlignLocY(variable: Variable, location: Location | None=None, alignment_mode: Literal["Block center", "Lower block corner"]="Block center", rotation: Literal["Keep rotation", "Remove rotation"]="Keep rotation", ):
+        """
+        Aligns a location to the center or corner of the block it is in. Only aligns the Y coordinate.
+    
+        :param Variable variable: Variable to set
+        :param Location | None location: Location to align (optional)
+        :param str alignment_mode: Alignment Mode
+        :param str rotation: Rotation
+        
+        """
+        return SetVariable.AlignLoc(variable, location, alignment_mode, "Only Y", rotation)
+
+    @staticmethod
+    def AlignLocXZ(variable: Variable, location: Location | None=None, alignment_mode: Literal["Block center", "Lower block corner"]="Block center", rotation: Literal["Keep rotation", "Remove rotation"]="Keep rotation", ):
+        """
+        Aligns a location to the center or corner of the block it is in. Only aligns the X and Z coordinates.
+    
+        :param Variable variable: Variable to set
+        :param Location | None location: Location to align (optional)
+        :param str alignment_mode: Alignment Mode
+        :param str rotation: Rotation
+        
+        """
+        return SetVariable.AlignLoc(variable, location, alignment_mode, "X and Z", rotation)
+    
+    AlignY = AlignLocY
+    AlignXZ = AlignLocXZ
+
+    # endregion AlignLoc
+    
+    # region RotateAroundAxis
+    
+    @staticmethod
+    def RotateAroundAxisX(variable: Variable, vector: DFVector | None=None, number: Number=None, angle_units: Literal["Degrees", "Radians"]="Degrees", ):
+        """
+        Rotates a vector around axis X by a given angle in degrees.
+
+        :param Variable variable: Variable to set
+        :param Location | None vector: Vector to rotate (optional)
+        :param Number angle: Angle in degrees
+
+        """
+        return SetVariable.RotateAroundAxis(variable, vector, number, "X", angle_units)
+    
+    @staticmethod
+    def RotateAroundAxisY(variable: Variable, vector: DFVector | None=None, number: Number=None, angle_units: Literal["Degrees", "Radians"]="Degrees", ):
+        """
+        Rotates a vector around axis Y by a given angle in degrees.
+
+        :param Variable variable: Variable to set
+        :param Location | None vector: Vector to rotate (optional)
+        :param Number angle: Angle in degrees
+
+        """
+        return SetVariable.RotateAroundAxis(variable, vector, number, "Y", angle_units)
+
+    @staticmethod
+    def RotateAroundAxisZ(variable: Variable, vector: DFVector | None=None, number: Number=None, angle_units: Literal["Degrees", "Radians"]="Degrees", ):
+        """
+        Rotates a vector around axis Z by a given angle in degrees.
+
+        :param Variable variable: Variable to set
+        :param Location | None vector: Vector to rotate (optional)
+        :param Number angle: Angle in degrees
+
+        """
+        return SetVariable.RotateAroundAxis(variable, vector, number, "Z", angle_units)
+
+    # endregion RotateAroundAxis
