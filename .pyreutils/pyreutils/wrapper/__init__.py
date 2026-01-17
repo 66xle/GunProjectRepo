@@ -143,40 +143,37 @@ else:
     Function = _Function_Wrapper
     Process = _Process_Wrapper
     
-def local(name):
-    """
-    Create a local variable with the given name. 
+local = MagicVarHandler('local')
+"""
+Create a local variable with the given name. 
+
+
+:param name: The name of the variable.
+:return MagicVarHandler: Creates Variable(name, 'local')
+"""
     
 
-    :param name: The name of the variable.
-    :return MagicVarHandler: Creates Variable(name, 'local')
-    """
-    return MagicVarHandler('local', name)
+line = MagicVarHandler('line')
+"""
+Create a line variable with the given name.
 
-def line(name):
-    """
-    Create a line variable with the given name.
+:param name: The name of the variable.
+:return MagicVarHandler: Creates Variable(name, 'line')
+"""
 
-    :param name: The name of the variable.
-    :return MagicVarHandler: Creates Variable(name, 'line')
-    """
-    return MagicVarHandler('line', name)
+save = MagicVarHandler('save')
+"""
+Create a save variable with the given name.
 
-def save(name):
-    """
-    Create a save variable with the given name.
+:param name: The name of the variable.
+:return MagicVarHandler: Creates Variable(name, 'save')
+"""
 
-    :param name: The name of the variable.
-    :return MagicVarHandler: Creates Variable(name, 'save')
-    """
-    return MagicVarHandler('save', name)
+game = MagicVarHandler('unsaved')
+"""
+Create a game (unsaved) variable with the given name.
 
-def game(name):
-    """
-    Create a game (unsaved) variable with the given name.
-
-    :param name: The name of the variable.
-    :return MagicVarHandler: Creates Variable(name, 'game')
-    """
-    return MagicVarHandler('unsaved', name)
+:param name: The name of the variable.
+:return MagicVarHandler: Creates Variable(name, 'game')
+"""
 

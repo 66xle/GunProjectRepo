@@ -24,7 +24,6 @@ def _check_unclosed_blocks():
             sys.stderr.write(
                 f"\n{RED}{BOLD}✖ FATAL ERROR: Missing 'with' keyword!{RESET}\n"
                 f"{RED}You defined a '{block.name}' block but didn't enter it.{RESET}\n"
-                # FIX: Format strictly as 'File "path", line N' for IDE Clickability
                 f'{CYAN}  File "{block.origin_file}", line {block.origin_line}{RESET}\n'
                 f"Correct usage: {BOLD}with {block.name}(...):{RESET}\n\n"
             )
@@ -33,8 +32,20 @@ atexit.register(_check_unclosed_blocks)
 
 class ContextBlock:
     def __init__(self, start_blocks, close_block=None, name="Block"):
+        # ==========================================================
+        # 1. CRITICAL: ASSIGN ATTRIBUTES FIRST (Prevents Recursion)
+        # ==========================================================
+        self.start_blocks = start_blocks if isinstance(start_blocks, list) else [start_blocks]
+        self.close_block = close_block
+        self.name = name
+        self._is_entered = False
+        
+        self.origin_file = "Unknown"
         self.origin_line = 0
         
+        # ==========================================================
+        # 2. STACK TRACE LOGIC
+        # ==========================================================
         try:
             # Smart Stack Trace: Filter out pyreutils library files
             for frame_info in inspect.stack():
@@ -52,9 +63,13 @@ class ContextBlock:
             except Exception:
                 pass
             
-        is_container = self.close_block is not None or (
-            hasattr(self.start_blocks[0], 'codeblocks')
-        )
+        # ==========================================================
+        # 3. REGISTRY LOGIC
+        # ==========================================================
+        # Now it is safe to check self.start_blocks because it is assigned
+        has_blocks = hasattr(self.start_blocks[0], 'codeblocks')
+        is_container = (self.close_block is not None) or has_blocks
+        
         if is_container:
             _pending_containers.append(self)
         
@@ -81,4 +96,12 @@ class ContextBlock:
         _context_stack.pop()
 
     def __getattr__(self, name):
+        """
+        Proxies attributes to the underlying DF object.
+        """
+        # SAFETY CHECK: If __init__ fails or attributes are missing, 
+        # do not loop infinitely looking for them.
+        if name in ('start_blocks', 'close_block', '_is_entered'):
+            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+            
         return getattr(self.start_blocks[0], name)
