@@ -154,7 +154,6 @@ Create a local variable with the given name.
 :param name: The name of the variable.
 :return MagicVarHandler: Creates Variable(name, 'local')
 """
-    
 
 line = MagicVarHandler('line')
 """
@@ -164,7 +163,7 @@ Create a line variable with the given name.
 :return MagicVarHandler: Creates Variable(name, 'line')
 """
 
-save = MagicVarHandler('save')
+save = MagicVarHandler('saved')
 """
 Create a save variable with the given name.
 
