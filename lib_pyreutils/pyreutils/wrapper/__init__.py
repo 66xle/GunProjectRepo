@@ -17,6 +17,7 @@ from dfpyre import IfVariable as _IfVariable
 from dfpyre import IfGame as _IfGame
 from dfpyre import IfEntity as _IfEntity
 from dfpyre import Repeat as _Repeat
+from dfpyre import Control as _Control
 from dfpyre import *
 
 # Import Custom SetVariable Subclass
@@ -101,6 +102,7 @@ if TYPE_CHECKING:
     IfEntity = _IfEntity
     SelectObject = _SelectObject
     Repeat = _Repeat
+    Control = _Control
     
     # Events
     PlayerEvent = _PlayerEvent
@@ -127,6 +129,7 @@ else:
     IfGame = AutoEmitter(_IfGame)
     IfEntity = AutoEmitter(_IfEntity)
     Repeat = AutoEmitter(_Repeat)
+    Control = AutoEmitter(_Control)
     
     # 2. Smart Variables
     SetVariable = SmartSetVariableWrapper()
