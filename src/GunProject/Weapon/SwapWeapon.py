@@ -46,13 +46,14 @@ with Function(
     Parameter('bool-InitWeapon', ParameterType.NUMBER, optional=True, default_value=0)
 ) as f:
 
+    # Resolve hotbar slot
     num_HotBarSlot.v = GameValue('Event Hotbar Slot')
 
     with IfVariable.Equals(line('bool-InitWeapon'), 1):
         num_HotBarSlot.v = 1
 
 
-    # Check If playing animation
+    # Check if animation is playing
     with IfVariable.Equals(bool_PlayingAnim, 1):
         bool_CancelAnim.v = 1
         with Repeat.While(bool_PlayingAnim, 1, sub_action='='):
@@ -60,11 +61,12 @@ with Function(
 
     Control.Wait()
 
+    # Fetch item from hotbar
     item_MainHand.v = SetVariable.GetListValue(GameValue('Hotbar Items'), num_HotBarSlot)
     with IfVariable.ItemHasTag(item_MainHand, 'id', inverted=True):
         Control.Return()
 
-
+    # Reset recoil + assign held item
     def_num_Recoil.v = 0
     SetVariable.SetModelDataNums(def_item_MainHand, 1)
     PlayerAction.SetSlotItem(def_item_MainHand, def_num_HotbarSlot)
@@ -73,6 +75,7 @@ with Function(
     def_num_HotbarSlot.v = GameValue('Event Hotbar Slot')
 
 
+    # Load gun tags
     dict_GunTag.v = SetVariable.GetAllItemTags(def_item_MainHand)
 
     def_num_GunID.v        = SetVariable.GetDictValue(dict_GunTag, 'id')
@@ -90,7 +93,7 @@ with Function(
     def_num_ReloadLoopS.v = SetVariable.GetDictValue(dict_GunTag, 'reload_loop_start')
     def_num_ReloadLoopE.v = SetVariable.GetDictValue(dict_GunTag, 'reload_loop_end')
 
-
+    # Recoil calculations
     def_num_Spread.v       = SetVariable.GetDictValue(dict_GunTag, 'max_spread')
     def_num_AimSpread.v    = SetVariable.GetDictValue(dict_GunTag, 'aim_spread')
     num_RecoilTime.v       = SetVariable.GetDictValue(dict_GunTag, 'recoil_time')
@@ -103,10 +106,10 @@ with Function(
     )
     def_num_IncreaseRec.v = def_num_HipRecoil
 
-
+    # Single fire handling
     PlayerAction.SetEquipment(Item('ender_eye'), equipment_slot='Off hand')
 
-    with IfVariable.StringMatches(def_str_Type, 'sniper'):
+    with IfVariable.StringMatches(def_str_Type, ['sniper', 'shotgun']):
         PlayerAction.ClearItems(Item('ender_eye'))
 
 f.build_and_send()
