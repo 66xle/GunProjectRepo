@@ -1,27 +1,43 @@
-from dfpyre import *
+from pyreutils.wrapper import *
 
-Function('026 DMGMob', Parameter('num-Damage', ParameterType.NUMBER), codeblocks=[
-    SetVariable.ShiftAllAxes(Variable('loc-Position1', 'local'), GameValue('Location', 'Selection'), -0.5, 0, 0.5),
-    SetVariable.ShiftAllAxes(Variable('loc-Position2', 'local'), GameValue('Location', 'Selection'), 0.5, 2, -0.5),
-    SetVariable.GetCoord(Variable('num-YMob', 'local'), Variable('loc-Hit', 'local'), Variable('loc-ShootBullet', 'local'), coordinate='Y'),
-    SetVariable.GetCoord(Variable('num-YMobPos1', 'local'), Variable('loc-Position1', 'local'), coordinate='Y'),
-    SetVariable.GetCoord(Variable('num-YMobPos2', 'local'), Variable('loc-Position2', 'local'), coordinate='Y'),
-    IfVariable.InRange(Variable('num-YMob', 'local'), Variable('num-YMobPos1', 'local'), Variable('num-YMobPos2', 'local'), codeblocks=[
-        SetVariable.Increment(Variable('num-YMobPos1', 'local'), 1.5),
-        SetVariable.Assign(Variable('num-DMGDealt', 'local'), Variable('num-Damage', 'line')),
-        IfVariable.InRange(Variable('num-YMob', 'local'), Variable('num-YMobPos1', 'local'), Variable('num-YMobPos2', 'local'), codeblocks=[
-            SetVariable.Multiply(Variable('num-DMGDealt', 'local'), Variable('num-Damage', 'local'), 2.5)
-        ]),
-        PlayerAction.PlaySound(Sound('Item Frame Add Item', 2.0, 2.0), target=Target.DEFAULT),
-        PlayerAction.SendMessage(Text('hit'), target=Target.DEFAULT),
-        EntityAction.Damage(Variable('num-DMGDealt', 'local')),
-        EntityAction.SetInvulTicks(0),
-        SetVariable.Assign(Variable('num-Health', 'local'), GameValue('Current Health', 'Selection')),
-        EntityAction.SetName(Text('%var(num-Health)')),
-        IfVariable.LessEqual(GameValue('Current Health', 'Selection'), 100, codeblocks=[
-            Control.Wait(),
+loc_Position1 = local('loc-Position1')
+loc_Position2 = local('loc-Position2')
+num_YMob      = local('num-YMob')
+num_YMobPos1  = local('num-YMobPos1')
+num_YMobPos2  = local('num-YMobPos2')
+num_DMGDealt  = local('num-DMGDealt')
+num_Damage    = line('num-Damage')
+num_Health    = local('num-Health')
+loc_Hit       = local('loc-Hit')
+loc_ShootBullet = local('loc-ShootBullet')
+
+mob_location  = GameValue('Location', 'Selection')
+mob_health    = GameValue('Current Health', 'Selection')
+
+with Function('026 DMGMob', Parameter('num-Damage', ParameterType.NUMBER)) as f:
+    loc_Position1.v = SetVariable.ShiftAllAxes(mob_location, -0.5, 0, 0.5)
+    loc_Position2.v = SetVariable.ShiftAllAxes(mob_location, 0.5, 2, -0.5)
+    num_YMob.v      = SetVariable.GetCoordY(loc_Hit)
+    num_YMobPos1.v  = SetVariable.GetCoordY(loc_Position1)
+    num_YMobPos2.v  = SetVariable.GetCoordY(loc_Position2)
+
+    with IfVariable.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
+        num_YMobPos1.v += 1.5
+        num_DMGDealt.v = num_Damage
+
+        with IfVariable.InRange(num_YMob, num_YMobPos1, num_YMobPos2):
+            num_DMGDealt.v *= 2.5
+
+        PlayerAction.PlaySound(Sound('Item Frame Add Item', 2.0, 2.0), target=Target.DEFAULT)
+        PlayerAction.SendMessage(Text('hit'), target=Target.DEFAULT)
+        EntityAction.Damage(num_DMGDealt, target=Target.SELECTION)
+        EntityAction.SetInvulTicks(0, target=Target.SELECTION)
+        num_Health.v = mob_health
+        EntityAction.SetName(Text('%var(num-Health)'), target=Target.SELECTION)
+
+        with IfVariable.LessEqual(mob_health, 100):
             EntityAction.Remove()
-        ]),
+
         SelectObject.Reset()
-    ])
-])
+
+f.build_and_send()
