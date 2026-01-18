@@ -1,0 +1,143 @@
+from pyreutils.wrapper import *
+
+with Function("test") as f:
+    # Batch 1 (1-27)
+    Player.SendMessage(
+        [GameValue.CurrentHealth(),
+        GameValue.MaximumHealth(),
+        GameValue.AbsorptionHealth(),
+        GameValue.FoodLevel(),
+        GameValue.FoodSaturation(),
+        GameValue.FoodExhaustion(),
+        GameValue.AttackDamage(),
+        GameValue.AttackSpeed(),
+        GameValue.AttackCooldown(),
+        GameValue.AttackCooldownTicks(),
+        GameValue.ArmorPoints(),
+        GameValue.ArmorToughness(),
+        GameValue.InvulnerabilityTicks(),
+        GameValue.ExperienceLevel(),
+        GameValue.ExperienceProgress(),
+        GameValue.FireTicks(),
+        GameValue.FreezeTicks(),
+        GameValue.RemainingAir(),
+        GameValue.FallDistance(),
+        GameValue.HeldSlot(),
+        GameValue.Ping(),
+        GameValue.SteerSidewaysMovement(),
+        GameValue.SteerForwardMovement(),
+        GameValue.ItemUsageProgress(),
+        GameValue.FlightSpeed(),
+        GameValue.WalkSpeed(),
+        GameValue.EntityWidth()]
+    )
+
+    # Batch 2 (28-54)
+    Player.SendMessage(
+        [GameValue.EntityHeight(),
+        GameValue.Location(),
+        GameValue.TargetBlockLocation(),
+        GameValue.TargetBlockSide(),
+        GameValue.EyeLocation(),
+        GameValue.XCoordinate(),
+        GameValue.YCoordinate(),
+        GameValue.ZCoordinate(),
+        GameValue.MidpointLocation(),
+        GameValue.Pitch(),
+        GameValue.Yaw(),
+        GameValue.BodyYaw(),
+        GameValue.StandingBlockLocation(),
+        GameValue.SpawnLocation(),
+        GameValue.Velocity(),
+        GameValue.Direction(),
+        GameValue.MainHandItem(),
+        GameValue.OffHandItem(),
+        GameValue.ArmorItems(),
+        GameValue.HotbarItems(),
+        GameValue.InventoryItems(),
+        GameValue.CursorItem(),
+        GameValue.InventoryMenuItems(),
+        GameValue.SaddleItem(),
+        GameValue.EntityItem(),
+        GameValue.Name(),
+        GameValue.UUID()]
+    )
+
+    # Batch 3 (55-81)
+    Player.SendMessage(
+        [GameValue.EntityType(),
+        GameValue.GameMode(),
+        GameValue.OpenInventoryTitle(),
+        GameValue.PotionEffects(),
+        GameValue.Vehicle(),
+        GameValue.Passengers(),
+        GameValue.LeadHolder(),
+        GameValue.AttachedLeads(),
+        GameValue.TargetedEntityUUID(),
+        GameValue.ProjectileShooterUUID(),
+        GameValue.DisplayEntityTranslation(),
+        GameValue.DisplayEntityScale(),
+        GameValue.Pose(),
+        GameValue.WeatherType(),
+        GameValue.PickEntityResult(),
+        GameValue.ParticleVisibilityStatus(),
+        GameValue.PressedMovementKeys(),
+        GameValue.EventBlockLocation(),
+        GameValue.EventBlockSide(),
+        GameValue.EventDamage(),
+        GameValue.DamageEventCause(),
+        GameValue.RawEventDamage(),
+        GameValue.EventDeathMessage(),
+        GameValue.EventHealAmount(),
+        GameValue.HealEventCause(),
+        GameValue.EventExplosionAffectedBlocks(),
+        GameValue.EventPower()]
+    )
+
+    # Batch 4 (82-108)
+    Player.SendMessage(
+        [GameValue.EventCommand(),
+        GameValue.EventCommandArguments(),
+        GameValue.EventItem(),
+        GameValue.EventHotbarSlot(),
+        GameValue.EventClickedSlotIndex(),
+        GameValue.EventClickedSlotItem(),
+        GameValue.EventClickedSlotNewItem(),
+        GameValue.CloseInventoryEventCause(),
+        GameValue.InventoryEventClickType(),
+        GameValue.FishEventCause(),
+        GameValue.TeleportEventCause(),
+        GameValue.TeleportLocation(),
+        GameValue.ExhaustionEventCause(),
+        GameValue.EventExhaustion(),
+        GameValue.TransformEventCause(),
+        GameValue.EventTransformEntities(),
+        GameValue.EventHitType(),
+        GameValue.ProductID(),
+        GameValue.EventMessage(),
+        GameValue.EventSignText(),
+        GameValue.EventSignSide(),
+        GameValue.CombustEventDuration(),
+        GameValue.CombustEventCause(),
+        GameValue.PlayerCount(),
+        GameValue.CPUUsage(),
+        GameValue.ServerTPS(),
+        GameValue.Timestamp()]
+    )
+
+    # Batch 5 (109-119)
+    Player.SendMessage([
+        GameValue.SelectionSize(),
+        GameValue.SelectionTargetNames(),
+        GameValue.SelectionTargetUUIDs(),
+        GameValue.PlotID(),
+        GameValue.PlotName(),
+        GameValue.PlotSize(),
+        GameValue.MicrosecondsSinceStartup(),
+        GameValue.TicksSinceStartup(),
+        GameValue.ActiveBlockTransactions(),
+        GameValue.PlotPlayerNames(),
+        GameValue.PlotPlayerUUIDs()
+    ])
+
+f.build_and_send()
