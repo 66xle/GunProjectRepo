@@ -1,5 +1,9 @@
 from .target import *
-from . import fix_repeat
+from . import repeat
+from . import select
+from . import particle
 
 # Apply the fix immediately when pyreutils is imported
-fix_repeat.apply_patch()
+repeat.apply_patch()
+select.apply_patch()
+particle.apply_patch()
