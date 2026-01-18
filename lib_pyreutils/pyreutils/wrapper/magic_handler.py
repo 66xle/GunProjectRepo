@@ -1,22 +1,24 @@
 from dfpyre import Var
 from ..alias.SetVariable import SetVariable as _SetVariable
+from ..alias.SelectObject import SelectObject as _SelectObject # Import SelectObject
 from .context import _get_current_context
 from .math_ops import MathOp
 from .smart_wrapper import OptimisticOp
-
 
 # ==========================================
 # 1. SHARED ASSIGNMENT LOGIC
 # ==========================================
 def _perform_assignment(var_obj, value):
-    """(Same shared logic as before)"""
+    """
+    Handles assignment logic.
+    """
     # Ignore self-assignment
     if value is var_obj:
         return
 
     ctx = _get_current_context()
 
-    # MathOps
+    # --- CASE 1: MATH OPERATIONS ---
     if isinstance(value, MathOp):
         if value.is_complex():
             ctx.append(_SetVariable.Assign(var_obj, value.to_math()))
@@ -40,8 +42,9 @@ def _perform_assignment(var_obj, value):
                 ctx.append(_SetVariable.Assign(var_obj, source))
         return
 
-    # Optimistic Ops
+    # --- CASE 2: OPTIMISTIC OPS (Smart Wrapper Results) ---
     if isinstance(value, OptimisticOp):
+        # 1. Rollback the block if it was auto-added by the SmartWrapper
         if value.created_block is not None:
             if isinstance(value.created_block, list):
                 for b in reversed(value.created_block):
@@ -49,15 +52,40 @@ def _perform_assignment(var_obj, value):
                         ctx.pop()
             elif ctx and ctx[-1] is value.created_block:
                 ctx.pop()
-        method = getattr(_SetVariable, value.name)
-        result = method(var_obj, *value.args)
-        if isinstance(result, list):
-            ctx.extend(result)
-        else:
-            ctx.append(result)
-        return
 
-    # Standard Assign
+        # 2. PRIORITY 1: Try SetVariable
+        if hasattr(_SetVariable, value.name):
+            method = getattr(_SetVariable, value.name)
+            result = method(var_obj, *value.args)
+            if isinstance(result, list): 
+                ctx.extend(result)
+            else: 
+                ctx.append(result)
+            return
+        
+        # 3. PRIORITY 2: Try SelectObject (Fallback)
+        # This treats 'Select.Method' as if it were 'SetVar.Method', 
+        # passing the variable as the first argument.
+        if hasattr(_SelectObject, value.name):
+            method = getattr(_SelectObject, value.name)
+            try:
+                result = method(var_obj, *value.args)
+                if isinstance(result, list): 
+                    ctx.extend(result)
+                else: 
+                    ctx.append(result)
+                return
+            except TypeError as e:
+                # Provide a helpful error if the arguments don't match
+                raise TypeError(
+                    f"Failed to assign using 'Select.{value.name}'.\n"
+                    f"The method exists, but it likely does not accept a Variable as the first argument.\n"
+                    f"Python Error: {e}"
+                )
+
+        raise AttributeError(f"Neither SetVariable nor SelectObject has a method named '{value.name}'")
+
+    # --- CASE 3: STANDARD ASSIGNMENT ---
     result = _SetVariable.Assign(var_obj, value)
     if isinstance(result, list):
         ctx.extend(result)

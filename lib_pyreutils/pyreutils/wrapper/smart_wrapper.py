@@ -1,4 +1,3 @@
-from ..alias.SetVariable import SetVariable as _SetVariable
 from .math_ops import MathOp
 from .context import _get_current_context
 
@@ -8,14 +7,22 @@ class OptimisticOp:
         self.args = args
         self.created_block = created_block
 
-class SmartSetVariableWrapper:
+class SmartWrapper:
+    def __init__(self, target_class):
+        """
+        A generic wrapper that:
+        1. Auto-adds the generated block to the Context.
+        2. Converts MathOp arguments to valid DF numbers.
+        3. Returns an OptimisticOp for variable assignment.
+        """
+        self.target_class = target_class
+
     def __getattr__(self, name):
-        original_method = getattr(_SetVariable, name)
+        # Dynamically get the method from the target class (_SetVariable, _SelectObject, etc.)
+        original_method = getattr(self.target_class, name)
         
         def wrapper(*args, **kwargs):
-            # --- FIX: MATH IN PARAMETERS ---
-            # If any argument is a MathOp (e.g. SetVar.Exp(x, 2, v.y + 2)),
-            # we must convert it to a Num item immediately.
+            # --- 1. CLEAN ARGUMENTS (MathOp -> Number) ---
             clean_args = []
             for arg in args:
                 if isinstance(arg, MathOp): 
@@ -23,15 +30,25 @@ class SmartSetVariableWrapper:
                 else: 
                     clean_args.append(arg)
             
+            # --- 2. EXECUTE & CONTEXTUALIZE ---
             try:
+                # Call the actual library method
                 result = original_method(*clean_args, **kwargs)
+                
+                # Add to the current 'with' block automatically
                 ctx = _get_current_context()
-                if isinstance(result, list): 
-                    ctx.extend(result)
-                else: 
-                    ctx.append(result)
+                if ctx is not None:
+                    if isinstance(result, list): 
+                        ctx.extend(result)
+                    else: 
+                        ctx.append(result)
+                
+                # --- 3. RETURN OPTIMISTIC OP ---
+                # This allows logic like: v.var = SelectObject.Random()
                 return OptimisticOp(name, clean_args, created_block=result)
+                
             except Exception:
+                # Fallback if something fails (keeps the script alive)
                 return OptimisticOp(name, clean_args, created_block=None)
             
         return wrapper

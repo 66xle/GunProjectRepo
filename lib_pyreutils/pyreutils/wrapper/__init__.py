@@ -26,7 +26,7 @@ from ..alias              import *
 
 from .context import ContextBlock, _get_current_context
 from .emitter import AutoEmitter, HeaderEmitter
-from .smart_wrapper import SmartSetVariableWrapper
+from .smart_wrapper import SmartWrapper
 from .magic_handler import MagicVarHandler
 from .math_ops import MathOp 
 
@@ -133,19 +133,18 @@ else:
     IfGame = AutoEmitter(_IfGame)
     IfEntity = AutoEmitter(_IfEntity)
     
-    SelectObject = AutoEmitter(_SelectObject)
     Repeat = AutoEmitter(_Repeat)
     Control = AutoEmitter(_Control)
     
-    # 2. Smart Variables
-    SetVariable = SmartSetVariableWrapper()
+    # 2. Smart Wrappers (Variable Assignment Support)
+    SetVariable = SmartWrapper(_SetVariable)
+    SelectObject = SmartWrapper(_SelectObject)
 
     # 3. Events (HeaderEmitter)
     PlayerEvent = HeaderEmitter(_PlayerEvent)
     EntityEvent = HeaderEmitter(_EntityEvent)
     
     # 4. Standalone Wrappers (Explicit Assignment)
-    # This is where we force Python to use our logic.
     CallFunction = _CallFunction_Wrapper
     StartProcess = _StartProcess_Wrapper
     Else = _Else_Wrapper
