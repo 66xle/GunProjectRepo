@@ -72,29 +72,18 @@ def get_shoot_position():
 
     return loc_BulletStart
 
-def hitscan(loc_RaycastOrigin, loc_Hit):
+def hitscan(loc_RaycastOrigin):
     bool_HitPlayer     = local('bool-HitPlayer')
     num_ParticleLength = local('num-ParticleLength')
     
     def_bool_HitScan.v = 0
     bool_HitPlayer.v = 0
 
-    Select.EntityName(def_str_EntityHitUUID)
-    with If.Equals(GameValue.SelectionSize(), 0):
-        Select.PlayerName(def_str_PlayerHitUUID)
-        bool_HitPlayer.v = 1
-
     num_ParticleLength.v = SetV.Distance(loc_RaycastOrigin, GameValue.MidpointLocation(Target.SELECTION))
-    loc_Hit.v = SetV.ShiftInDirection(loc_RaycastOrigin, num_ParticleLength)
-
-    # Pass loc_Hit to these functions
-    with If.Equals(bool_HitPlayer, 0):
-        CallFunction('026 DMGMob', (def_num_Damage))
-    with Else():
-        Control.PrintDebug([Text('%selected updated loc'), GameValue.Location(Target.SELECTION)])
-        CallFunction('025 DMGPlayer', (def_num_Damage))
-
-
+    loc_hit = SetV.ShiftInDirection(loc_RaycastOrigin, num_ParticleLength)
+    
+    return loc_hit
+    
 def main():
     # Init Variables
     loc_RaycastOrigin  = local('loc-RaycastOrigin')
@@ -109,7 +98,19 @@ def main():
 
         # HitScan logic
         with If.Equals(def_bool_HitScan, 1):
-            hitscan(loc_RaycastOrigin, loc_Hit)
+            loc_Hit.v = hitscan(loc_RaycastOrigin)
+            
+            Select.EntityName(def_str_EntityHitUUID)
+            with If.Equals(GameValue.SelectionSize(), 0):
+                Select.PlayerName(def_str_PlayerHitUUID)
+                bool_HitPlayer.v = 1
+           
+            # Pass loc_Hit to these functions
+            with If.Equals(bool_HitPlayer, 0):
+                CallFunction('026 DMGMob', (def_num_Damage)) 
+            with Else():
+                Control.PrintDebug([Text('%selected updated loc'), GameValue.Location(Target.SELECTION)])
+                CallFunction('025 DMGPlayer', (def_num_Damage))
 
         # Non-hitScan logic
         with Else():
@@ -117,7 +118,7 @@ def main():
             damage_target(Select.AllEntities, '026 DMGMob', loc_RaycastOrigin, loc_Hit)
 
             # Damage players
-            damage_target(lambda: Select.PlayerName('%default', inverted=True), '025 DMGPlayer', loc_RaycastOrigin, loc_Hit)
+            damage_target(lambda: -Select.PlayerName('%default'), '025 DMGPlayer', loc_RaycastOrigin, loc_Hit)
 
             # Set bullet holes
             with IfGame.InBlock(loc_Hit):
