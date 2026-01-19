@@ -6,6 +6,21 @@ class OptimisticOp:
         self.name = name
         self.args = args
         self.created_block = created_block
+        
+    def __neg__(self):
+        """
+        Enables the syntax: -Select.PlayerName(...)
+        This grabs the block that was just created and sets inverted=True.
+        """
+        if self.created_block:
+            # Helper function to invert a single block
+            def _invert(block):
+                if hasattr(block, 'data') and isinstance(block.data, dict):
+                    block.data['attribute'] = 'NOT'
+            
+            _invert(self.created_block)
+        
+        return self
 
 class SmartWrapper:
     def __init__(self, target_class):
